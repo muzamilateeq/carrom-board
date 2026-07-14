@@ -1,4 +1,5 @@
 const { Engine, Render, Runner, Bodies, Composite, Mouse } = Matter;
+Matter.Resolver._restingThresh = 0.001;
 
 const engine = Engine.create();
 engine.gravity.y = 0;
@@ -21,7 +22,6 @@ const render = Render.create({
 let aimAnimation = 0;
 let shinePos = -80;
 
-
 const bgCanvas = document.createElement("canvas");
 bgCanvas.width = 300;
 bgCanvas.height = 300;
@@ -40,23 +40,41 @@ const bgCtx = bgCanvas.getContext("2d");
 let pageMouseX = 100;
 let pageMouseY = 100;
 window.addEventListener("mousemove", (e) => {
-
     const rect = render.canvas.getBoundingClientRect();
-
     pageMouseX = e.clientX - rect.left;
     pageMouseY = e.clientY - rect.top;
-
 });
+
+
+function getEventCoords(e) {
+    const rect = render.canvas.getBoundingClientRect();
+    if (e.touches && e.touches.length > 0) {
+        return {
+            x: e.touches[0].clientX - rect.left,
+            y: e.touches[0].clientY - rect.top
+        };
+    } else if (e.changedTouches && e.changedTouches.length > 0) {
+        return {
+            x: e.changedTouches[0].clientX - rect.left,
+            y: e.changedTouches[0].clientY - rect.top
+        };
+    }
+    return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+    };
+}
 
 const player = Bodies.circle(65, 260, 10, {
     id: 'striker',
     label: 'striker',
     inertia: Infinity,
     frictionAir: 0.03,
-    restitution: 1.0,
+    restitution: 0.6,
     slop: 0,
     friction: 0,
     frictionStatic: 0,
+    density: 0.0025,
     plugin: { ccd: { toggled: true } },
     render: {
         fillStyle: '#d49b00d3',
@@ -70,7 +88,8 @@ const target = Bodies.circle(150, 150, 7, {
     frictionAir: 0.03,
     friction: 0,
     frictionStatic: 0,
-    restitution: 0.1,
+    restitution: 0.7,
+    density: 0.001,
     plugin: { ccd: { toggled: true } },
     render: {
         fillStyle: '#f30505ff'
@@ -81,15 +100,13 @@ const target2 = Bodies.circle(150, 165, 7, {
     id: 'white_1',
     label: 'white',
     inertia: Infinity,
-
-    restitution: 0.9,
+    restitution: 0.7,
     friction: 0,
     frictionAir: 0.02,
     frictionStatic: 0,
     slop: 0,
-
+    density: 0.001,
     plugin: { ccd: { toggled: true } },
-
     render: {
         fillStyle: '#f8f8f8',
         strokeStyle: '#000000',
@@ -97,10 +114,11 @@ const target2 = Bodies.circle(150, 165, 7, {
     }
 });
 const target3 = Bodies.circle(150, 180, 7, {
-    id: 'white_2', label: 'white', inertia: Infinity, restitution: 0.5,
+    id: 'white_2', label: 'white', inertia: Infinity, restitution: 0.7,
     friction: 0,
     frictionAir: 0.029,
     frictionStatic: 0,
+    density: 0.001,
     slop: 0,
     plugin: { ccd: { toggled: true } },
     render: {
@@ -111,10 +129,11 @@ const target3 = Bodies.circle(150, 180, 7, {
 });
 
 const target4 = Bodies.circle(150, 120, 7, {
-    id: 'white_3', label: 'white', inertia: Infinity, restitution: 0.5,
+    id: 'white_3', label: 'white', inertia: Infinity, restitution: 0.7,
     friction: 0,
     frictionAir: 0.029,
     frictionStatic: 0,
+    density: 0.001,
     slop: 0,
     plugin: { ccd: { toggled: true } },
     render: {
@@ -125,10 +144,11 @@ const target4 = Bodies.circle(150, 120, 7, {
 });
 
 const target5 = Bodies.circle(165, 140, 7, {
-    id: 'white_4', label: 'white', inertia: Infinity, restitution: 0.5,
+    id: 'white_4', label: 'white', inertia: Infinity, restitution: 0.7,
     friction: 0,
     frictionAir: 0.029,
     frictionStatic: 0,
+    density: 0.001,
     slop: 0,
     plugin: { ccd: { toggled: true } },
     render: {
@@ -139,9 +159,10 @@ const target5 = Bodies.circle(165, 140, 7, {
 });
 
 const target6 = Bodies.circle(180, 130, 7, {
-    id: 'white_5', label: 'white', inertia: Infinity, restitution: 0.5,
+    id: 'white_5', label: 'white', inertia: Infinity, restitution: 0.7,
     friction: 0,
     frictionAir: 0.029,
+    density: 0.001,
     frictionStatic: 0,
     slop: 0,
     plugin: { ccd: { toggled: true } },
@@ -153,25 +174,26 @@ const target6 = Bodies.circle(180, 130, 7, {
 });
 
 const target7 = Bodies.circle(135, 140, 7, {
-    id: 'white_6', label: 'white', inertia: Infinity, restitution: 0.5,
+    id: 'white_6', label: 'white', inertia: Infinity, restitution: 0.7,
     friction: 0,
     frictionAir: 0.029,
     frictionStatic: 0,
+    density: 0.001,
     slop: 0,
     plugin: { ccd: { toggled: true } },
     render: {
         fillStyle: '#f8f8f8',
         strokeStyle: '#000000ff',
         lineWidth: 1
-
     }
 });
 
 const target8 = Bodies.circle(120, 130, 7, {
-    id: 'white_7', label: 'white', inertia: Infinity, restitution: 0.5,
+    id: 'white_7', label: 'white', inertia: Infinity, restitution: 0.7,
     friction: 0,
     frictionAir: 0.029,
     frictionStatic: 0,
+    density: 0.001,
     slop: 0,
     plugin: { ccd: { toggled: true } },
     render: {
@@ -182,10 +204,11 @@ const target8 = Bodies.circle(120, 130, 7, {
 });
 
 const target9 = Bodies.circle(120, 170, 7, {
-    id: 'white_8', label: 'white', inertia: Infinity, restitution: 0.5,
+    id: 'white_8', label: 'white', inertia: Infinity, restitution: 0.7,
     friction: 0,
     frictionAir: 0.029,
     frictionStatic: 0,
+    density: 0.001,
     slop: 0,
     plugin: { ccd: { toggled: true } },
     render: {
@@ -196,10 +219,11 @@ const target9 = Bodies.circle(120, 170, 7, {
 });
 
 const target10 = Bodies.circle(180, 170, 7, {
-    id: 'white_9', label: 'white', inertia: Infinity, restitution: 0.5,
+    id: 'white_9', label: 'white', inertia: Infinity, restitution: 0.7,
     friction: 0,
     frictionAir: 0.029,
     frictionStatic: 0,
+    density: 0.001,
     slop: 0,
     plugin: { ccd: { toggled: true } },
     render: {
@@ -211,10 +235,11 @@ const target10 = Bodies.circle(180, 170, 7, {
 
 // --- OUTER RING (9 BLACK PIECES) ---
 const target11 = Bodies.circle(150, 135, 7, {
-    id: 'black_1', label: 'black', inertia: Infinity, restitution: 0.5,
+    id: 'black_1', label: 'black', inertia: Infinity, restitution: 0.7,
     friction: 0,
     frictionAir: 0.029,
     frictionStatic: 0,
+    density: 0.001,
     slop: 0,
     plugin: { ccd: { toggled: true } },
     render: {
@@ -225,10 +250,11 @@ const target11 = Bodies.circle(150, 135, 7, {
 });
 
 const target12 = Bodies.circle(135, 125, 7, {
-    id: 'black_2', label: 'black', inertia: Infinity, restitution: 0.5,
+    id: 'black_2', label: 'black', inertia: Infinity, restitution: 0.7,
     friction: 0,
     frictionAir: 0.029,
     frictionStatic: 0,
+    density: 0.001,
     slop: 0,
     plugin: { ccd: { toggled: true } },
     render: {
@@ -239,10 +265,11 @@ const target12 = Bodies.circle(135, 125, 7, {
 });
 
 const target13 = Bodies.circle(165, 125, 7, {
-    id: 'black_3', label: 'black', inertia: Infinity, restitution: 0.5,
+    id: 'black_3', label: 'black', inertia: Infinity, restitution: 0.7,
     friction: 0,
     frictionAir: 0.029,
     frictionStatic: 0,
+    density: 0.001,
     slop: 0,
     plugin: { ccd: { toggled: true } },
     render: {
@@ -253,10 +280,11 @@ const target13 = Bodies.circle(165, 125, 7, {
 });
 
 const target14 = Bodies.circle(180, 150, 7, {
-    id: 'black_4', label: 'black', inertia: Infinity, restitution: 0.5,
+    id: 'black_4', label: 'black', inertia: Infinity, restitution: 0.7,
     friction: 0,
     frictionAir: 0.029,
     frictionStatic: 0,
+    density: 0.001,
     slop: 0,
     plugin: { ccd: { toggled: true } },
     render: {
@@ -267,10 +295,11 @@ const target14 = Bodies.circle(180, 150, 7, {
 });
 
 const target15 = Bodies.circle(120, 150, 7, {
-    id: 'black_5', label: 'black', inertia: Infinity, restitution: 0.5,
+    id: 'black_5', label: 'black', inertia: Infinity, restitution: 0.7,
     friction: 0,
     frictionAir: 0.029,
     frictionStatic: 0,
+    density: 0.001,
     slop: 0,
     plugin: { ccd: { toggled: true } },
     render: {
@@ -281,10 +310,11 @@ const target15 = Bodies.circle(120, 150, 7, {
 });
 
 const target16 = Bodies.circle(135, 160, 7, {
-    id: 'black_6', label: 'black', inertia: Infinity, restitution: 0.5,
+    id: 'black_6', label: 'black', inertia: Infinity, restitution: 0.7,
     friction: 0,
     frictionAir: 0.029,
     frictionStatic: 0,
+    density: 0.001,
     slop: 0,
     plugin: { ccd: { toggled: true } },
     render: {
@@ -295,10 +325,11 @@ const target16 = Bodies.circle(135, 160, 7, {
 });
 
 const target17 = Bodies.circle(165, 160, 7, {
-    id: 'black_7', label: 'black', inertia: Infinity, restitution: 0.5,
+    id: 'black_7', label: 'black', inertia: Infinity, restitution: 0.7,
     friction: 0,
     frictionAir: 0.029,
     frictionStatic: 0,
+    density: 0.001,
     slop: 0,
     plugin: { ccd: { toggled: true } },
     render: {
@@ -309,10 +340,11 @@ const target17 = Bodies.circle(165, 160, 7, {
 });
 
 const target18 = Bodies.circle(135, 175, 7, {
-    id: 'black_8', label: 'black', inertia: Infinity, restitution: 0.5,
+    id: 'black_8', label: 'black', inertia: Infinity, restitution: 0.7,
     friction: 0,
     frictionAir: 0.029,
     frictionStatic: 0,
+    density: 0.001,
     slop: 0,
     plugin: { ccd: { toggled: true } },
     render: {
@@ -323,10 +355,11 @@ const target18 = Bodies.circle(135, 175, 7, {
 });
 
 const target19 = Bodies.circle(165, 175, 7, {
-    id: 'black_9', label: 'black', inertia: Infinity, restitution: 0.5,
+    id: 'black_9', label: 'black', inertia: Infinity, restitution: 0.7,
     friction: 0,
     frictionAir: 0.029,
     frictionStatic: 0,
+    density: 0.001,
     slop: 0,
     plugin: { ccd: { toggled: true } },
     render: {
@@ -336,27 +369,31 @@ const target19 = Bodies.circle(165, 175, 7, {
     }
 });
 
-const topWall = Bodies.rectangle(150, 2, 300, 20, {
-    restitution: 1.0,
+const topWall = Bodies.rectangle(150, 2, 300, 25, {
+    restitution: 0.5,
     friction: 0,
+    frictionStatic: 0,
     slop: 0,
     isStatic: true, render: { fillStyle: '#4d2d18' }
 });
-const bottomWall = Bodies.rectangle(150, 298, 300, 20, {
-    restitution: 1.0,
+const bottomWall = Bodies.rectangle(150, 298, 300, 25, {
+    restitution: 0.5,
     friction: 0,
+    frictionStatic: 0,
     slop: 0,
     isStatic: true, render: { fillStyle: '#4d2d18' }
 });
-const leftWall = Bodies.rectangle(2, 150, 20, 300, {
-    restitution: 1.0,
+const leftWall = Bodies.rectangle(2, 150, 25, 300, {
+    restitution: 0.5,
     friction: 0,
+    frictionStatic: 0,
     slop: 0,
     isStatic: true, render: { fillStyle: '#4d2d18' }
 });
-const rightWall = Bodies.rectangle(298, 150, 20, 300, {
-    restitution: 1.0,
+const rightWall = Bodies.rectangle(298, 150, 25, 300, {
+    restitution: 0.5,
     friction: 0,
+    frictionStatic: 0,
     slop: 0,
     isStatic: true, render: { fillStyle: '#4d2d18' }
 });
@@ -459,7 +496,6 @@ Composite.add(engine.world, [
 let activeParticles = [];
 
 function spawnHitParticles(x, y) {
-
     activeParticles.push({
         type: "ripple",
         x: x,
@@ -488,7 +524,6 @@ function spawnHitParticles(x, y) {
 }
 
 function spawnPocketParticles(x, y, label) {
-
     let color = "#ffffff";
     if (label === "black") color = "#e0a96d";
     else if (label === "queen") color = "#f30505";
@@ -560,9 +595,42 @@ function updateAndDrawParticles(context) {
     }
 }
 
-Matter.Events.on(engine, "collisionStart", function (event) {
 
+Matter.Events.on(engine, "collisionStart", function (event) {
     event.pairs.forEach(pair => {
+
+        let dynamicBody = null;
+        let staticBody = null;
+
+        if (pair.bodyA.isStatic && !pair.bodyA.isSensor) {
+            staticBody = pair.bodyA;
+            dynamicBody = pair.bodyB;
+        } else if (pair.bodyB.isStatic && !pair.bodyB.isSensor) {
+            staticBody = pair.bodyB;
+            dynamicBody = pair.bodyA;
+        }
+
+        if (dynamicBody && ['striker', 'white', 'black', 'queen'].includes(dynamicBody.label)) {
+            const normal = pair.collision.normal;
+            const vel = dynamicBody.velocity;
+            const speedAlongNormal = vel.x * normal.x + vel.y * normal.y;
+
+            if (speedAlongNormal < 0) {
+                const bounceCoefficient = dynamicBody.label === 'striker' ? 0.6 : 0.7;
+                let newVelX = vel.x - (1 + bounceCoefficient) * speedAlongNormal * normal.x;
+                let newVelY = vel.y - (1 + bounceCoefficient) * speedAlongNormal * normal.y;
+
+                const minBounce = 0.3;
+                const currentBounceSpeed = Math.hypot(newVelX, newVelY);
+                if (currentBounceSpeed < minBounce && currentBounceSpeed > 0.02) {
+                    const scale = minBounce / currentBounceSpeed;
+                    newVelX *= scale;
+                    newVelY *= scale;
+                }
+                Matter.Body.setVelocity(dynamicBody, { x: newVelX, y: newVelY });
+            }
+        }
+
         let isStrikerCollision = false;
         let otherBody = null;
         if (pair.bodyA.label === "striker") {
@@ -584,12 +652,8 @@ Matter.Events.on(engine, "collisionStart", function (event) {
         if (firstHitPiece) return;
 
         let other = null;
-
-        if (pair.bodyA.label === "striker")
-            other = pair.bodyB;
-
-        if (pair.bodyB.label === "striker")
-            other = pair.bodyA;
+        if (pair.bodyA.label === "striker") other = pair.bodyB;
+        if (pair.bodyB.label === "striker") other = pair.bodyA;
 
         if (!other) return;
 
@@ -600,20 +664,9 @@ Matter.Events.on(engine, "collisionStart", function (event) {
         ) return;
 
         firstHitPiece = other;
-
-        // if (currentPlayer === 1 && other.label === "black") {
-        //     foul = true;
-        //     console.log("FOUL! Player 1");
-        // }
-
-        // if (currentPlayer === 2 && other.label === "white") {
-        //     foul = true;
-        //     console.log("FOUL! Player 2");
-        // }
-
     });
-
 });
+
 const mouse = Mouse.create(render.canvas);
 
 let isAiming = false;
@@ -629,44 +682,40 @@ const dragThreshold = 5;
 const maxDragDistance = 50;
 const maxSpeed = 17;
 
-render.canvas.addEventListener("mousedown", () => {
-
+function handleStart(e) {
     if (isInMotion || player1Score === 9 || player2Score === 9) return;
-    const striker = Composite.allBodies(engine.world).find(
-        body => body.label === "striker"
-    );
 
-    let mousePos = {
-        x: pageMouseX,
-        y: pageMouseY
-    };
+    if (e.cancelable) e.preventDefault();
+    const coords = getEventCoords(e);
 
     let distance = Math.hypot(
-        mousePos.x - player.position.x,
-        mousePos.y - player.position.y
+        coords.x - player.position.x,
+        coords.y - player.position.y
     );
 
     if (distance <= maxDragDistance) {
-
         mouseDown = true;
         dragStarted = false;
-
-        startMouseX = mouse.position.x;
-        startMouseY = mouse.position.y;
+        startMouseX = coords.x;
+        startMouseY = coords.y;
     }
-});
+}
 
-render.canvas.addEventListener("mousemove", () => {
+function handleMove(e) {
+    const coords = getEventCoords(e);
+    pageMouseX = coords.x;
+    pageMouseY = coords.y;
 
-    if (!mouseDown || dragStarted) return;
+    if (!mouseDown) return;
+    if (e.cancelable) e.preventDefault();
 
-    const dx = mouse.position.x - startMouseX;
-    const dy = mouse.position.y - startMouseY;
+    if (dragStarted) return;
 
+    const dx = coords.x - startMouseX;
+    const dy = coords.y - startMouseY;
     const moved = Math.hypot(dx, dy);
 
     if (moved > dragThreshold) {
-
         dragStarted = true;
         isAiming = true;
 
@@ -675,21 +724,18 @@ render.canvas.addEventListener("mousemove", () => {
             y: 0
         });
     }
-});
+}
 
-window.addEventListener('mouseup', () => {
+function handleEnd(e) {
+    if (!mouseDown) return;
     mouseDown = false;
 
     if (isAiming) {
-        let mousePos = {
-            x: pageMouseX,
-            y: pageMouseY
-        };
-        let dragX = mousePos.x - player.position.x;
-        let dragY = mousePos.y - player.position.y;
+        if (e.cancelable) e.preventDefault();
+
+        let dragX = pageMouseX - player.position.x;
+        let dragY = pageMouseY - player.position.y;
         let currentDragDistance = Math.hypot(dragX, dragY);
-
-
 
         if (currentDragDistance < dragThreshold) {
             isAiming = false;
@@ -705,7 +751,7 @@ window.addEventListener('mouseup', () => {
             let angle = Math.atan2(dragY, dragX);
             firstHitPiece = null;
             foul = false;
-            pocketedInCurrentShot = []; // Reset pocketed list for the new shot!
+            pocketedInCurrentShot = [];
 
             Matter.Body.setVelocity(player, {
                 x: -Math.cos(angle) * calculatedSpeed,
@@ -713,14 +759,24 @@ window.addEventListener('mouseup', () => {
             });
         }
     }
-});
+}
+
+render.canvas.addEventListener("mousedown", handleStart);
+render.canvas.addEventListener("touchstart", handleStart, { passive: false });
+
+render.canvas.addEventListener("mousemove", handleMove);
+render.canvas.addEventListener("touchmove", handleMove, { passive: false });
+
+window.addEventListener("mouseup", handleEnd);
+window.addEventListener("touchend", handleEnd, { passive: false });
+
+
 function showMessage(text) {
     gameMessage = text;
     messageTimer = 120;
 }
 
 function drawBoard() {
-
     const context = bgCtx;
 
     context.beginPath();
@@ -779,13 +835,11 @@ function drawBoard() {
         context.stroke();
     });
 
-    // POCKET HOLES & CUSHIONS
     let pockets = [8, 292];
     pockets.forEach(x => {
         pockets.forEach(y => {
-            // Draw pocket hole shadow
             context.beginPath();
-            context.arc(x, y, 25, 0, 2 * Math.PI);
+            context.arc(x, y, 28, 0, 2 * Math.PI);
             context.fillStyle = '#111111';
             context.fill();
 
@@ -795,7 +849,6 @@ function drawBoard() {
             context.lineWidth = 3;
             context.stroke();
 
-            // Inner dark pocket shadow ring
             let pocketGrad = context.createRadialGradient(x, y, 10, x, y, 25);
             pocketGrad.addColorStop(0, '#000000');
             pocketGrad.addColorStop(1, '#222222');
@@ -805,7 +858,6 @@ function drawBoard() {
             context.fill();
         });
     });
-
 };
 
 function drawCustomBody(context, body) {
@@ -827,7 +879,6 @@ function drawCustomBody(context, body) {
     context.globalAlpha = opacity;
 
     if (body.label === "white") {
-        //  Coin with Rings
         let grad = context.createRadialGradient(pos.x - r * 0.3, pos.y - r * 0.3, r * 0.1, pos.x, pos.y, r);
         grad.addColorStop(0, "#ffffff");
         grad.addColorStop(0.3, "#f4eee1");
@@ -852,7 +903,6 @@ function drawCustomBody(context, body) {
         context.fill();
 
     } else if (body.label === "black") {
-
         let grad = context.createRadialGradient(pos.x - r * 0.3, pos.y - r * 0.3, r * 0.1, pos.x, pos.y, r);
         grad.addColorStop(0, "#4f4f4f");
         grad.addColorStop(0.4, "#2d2d2d");
@@ -876,7 +926,6 @@ function drawCustomBody(context, body) {
         context.fill();
 
     } else if (body.label === "queen") {
-        //  Queen with Gold Ring
         let grad = context.createRadialGradient(pos.x - r * 0.3, pos.y - r * 0.3, r * 0.1, pos.x, pos.y, r);
         grad.addColorStop(0, "#ff4040");
         grad.addColorStop(0.4, "#bf0000");
@@ -900,7 +949,6 @@ function drawCustomBody(context, body) {
         context.fill();
 
     } else if (body.label === "striker") {
-        // Red Striker
         let grad = context.createRadialGradient(pos.x - r * 0.3, pos.y - r * 0.3, r * 0.1, pos.x, pos.y, r);
         grad.addColorStop(0, "#ffd8a8");
         grad.addColorStop(0.35, "#ff922b");
@@ -929,7 +977,6 @@ function drawCustomBody(context, body) {
         context.fillStyle = "#ffd700";
         context.fill();
 
-
         context.beginPath();
         context.ellipse(pos.x - r * 0.28, pos.y - r * 0.28, r * 0.38, r * 0.18, -Math.PI / 4, 0, Math.PI * 2);
         let glossGrad = context.createLinearGradient(pos.x - r * 0.5, pos.y - r * 0.5, pos.x, pos.y);
@@ -938,7 +985,6 @@ function drawCustomBody(context, body) {
         context.fillStyle = glossGrad;
         context.fill();
     }
-
     context.restore();
 }
 
@@ -946,7 +992,6 @@ Matter.Events.on(render, 'afterRender', () => {
     let context = render.context;
     const allBodies = Composite.allBodies(engine.world);
     aimAnimation += 0.001;
-
     shinePos += 6;
 
     if (shinePos > maxDragDistance + 80)
@@ -956,7 +1001,6 @@ Matter.Events.on(render, 'afterRender', () => {
     context.globalCompositeOperation = 'source-over';
 
     if (isAiming) {
-
         let mousePos = {
             x: pageMouseX,
             y: pageMouseY
@@ -966,7 +1010,6 @@ Matter.Events.on(render, 'afterRender', () => {
         let dragY = mousePos.y - player.position.y;
 
         let currentDragDistance = Math.hypot(dragX, dragY);
-
         currentDragDistance = Math.min(currentDragDistance, maxDragDistance);
         const power = currentDragDistance / maxDragDistance;
 
@@ -978,22 +1021,14 @@ Matter.Events.on(render, 'afterRender', () => {
         let dirY = -Math.sin(angle);
 
         const circleRadius = maxDragDistance;
-
         const solidEndX = player.position.x + dirX * currentDragDistance;
         const solidEndY = player.position.y + dirY * currentDragDistance;
         let t = Infinity;
 
-        if (dirX > 0)
-            t = Math.min(t, (290 - player.position.x) / dirX);
-
-        if (dirX < 0)
-            t = Math.min(t, (10 - player.position.x) / dirX);
-
-        if (dirY > 0)
-            t = Math.min(t, (290 - player.position.y) / dirY);
-
-        if (dirY < 0)
-            t = Math.min(t, (10 - player.position.y) / dirY);
+        if (dirX > 0) t = Math.min(t, (290 - player.position.x) / dirX);
+        if (dirX < 0) t = Math.min(t, (10 - player.position.x) / dirX);
+        if (dirY > 0) t = Math.min(t, (290 - player.position.y) / dirY);
+        if (dirY < 0) t = Math.min(t, (10 - player.position.y) / dirY);
 
         hitX += dirX * t;
         hitY += dirY * t;
@@ -1002,7 +1037,6 @@ Matter.Events.on(render, 'afterRender', () => {
         let firstCoinDistance = Infinity;
 
         allBodies.forEach(body => {
-
             if (
                 body.label !== "white" &&
                 body.label !== "black" &&
@@ -1011,11 +1045,9 @@ Matter.Events.on(render, 'afterRender', () => {
 
             const vx = body.position.x - player.position.x;
             const vy = body.position.y - player.position.y;
-
             const projection = vx * dirX + vy * dirY;
 
             if (projection <= 0) return;
-
             if (projection > t) return;
 
             const closestX = player.position.x + dirX * projection;
@@ -1029,31 +1061,21 @@ Matter.Events.on(render, 'afterRender', () => {
             const safeDistanceSq = safeDistance * safeDistance;
 
             if (distSq <= safeDistanceSq && projection < firstCoinDistance) {
-
                 firstCoinDistance = projection;
-
                 const gap = 2;
-
                 firstCoin = {
                     x: player.position.x + dirX * (projection - gap),
                     y: player.position.y + dirY * (projection - gap)
                 };
             }
-
         });
-        context.save();
 
+        context.save();
         context.translate(player.position.x, player.position.y);
         context.rotate(aimAnimation);
 
         context.beginPath();
-        context.arc(
-            0,
-            0,
-            currentDragDistance,
-            0,
-            Math.PI * 2
-        );
+        context.arc(0, 0, currentDragDistance, 0, Math.PI * 2);
 
         context.setLineDash([12, 8]);
         context.lineDashOffset = -aimAnimation * 40;
@@ -1062,9 +1084,7 @@ Matter.Events.on(render, 'afterRender', () => {
         context.lineWidth = 1;
         context.shadowColor = "#FFD700";
         context.shadowBlur = 12;
-
         context.stroke();
-
         context.restore();
 
         const startWidth = 3;
@@ -1072,7 +1092,6 @@ Matter.Events.on(render, 'afterRender', () => {
 
         const dx = solidEndX - player.position.x;
         const dy = solidEndY - player.position.y;
-
         const len = Math.hypot(dx, dy);
 
         const nx = -dy / len;
@@ -1082,17 +1101,14 @@ Matter.Events.on(render, 'afterRender', () => {
             x: player.position.x + nx * startWidth,
             y: player.position.y + ny * startWidth
         };
-
         const p2 = {
             x: solidEndX + nx * endWidth,
             y: solidEndY + ny * endWidth
         };
-
         const p3 = {
             x: solidEndX - nx * endWidth,
             y: solidEndY - ny * endWidth
         };
-
         const p4 = {
             x: player.position.x - nx * startWidth,
             y: player.position.y - ny * startWidth
@@ -1120,8 +1136,6 @@ Matter.Events.on(render, 'afterRender', () => {
         context.fill();
 
         context.save();
-
-        // Clip inside arrow
         context.beginPath();
         context.moveTo(p1.x, p1.y);
         context.lineTo(p2.x, p2.y);
@@ -1130,11 +1144,9 @@ Matter.Events.on(render, 'afterRender', () => {
         context.closePath();
         context.clip();
 
-        // Rotate canvas to arrow direction
         context.translate(player.position.x, player.position.y);
         context.rotate(Math.atan2(dy, dx));
 
-        // Glow
         const glow = context.createLinearGradient(
             shinePos - 40,
             0,
@@ -1149,15 +1161,7 @@ Matter.Events.on(render, 'afterRender', () => {
         glow.addColorStop(1.0, "rgba(255,255,255,0)");
 
         context.fillStyle = glow;
-
-        // Draw large rectangle (only the clipped part is visible)
-        context.fillRect(
-            -50,
-            -15,
-            len + 100,
-            30
-        );
-
+        context.fillRect(-50, -15, len + 100, 30);
         context.restore();
 
         const arrowLength = 3;
@@ -1167,12 +1171,10 @@ Matter.Events.on(render, 'afterRender', () => {
             x: solidEndX + (dx / len) * arrowLength,
             y: solidEndY + (dy / len) * arrowLength
         };
-
         const left = {
             x: solidEndX + nx * arrowWidth,
             y: solidEndY + ny * arrowWidth
         };
-
         const right = {
             x: solidEndX - nx * arrowWidth,
             y: solidEndY - ny * arrowWidth
@@ -1188,17 +1190,12 @@ Matter.Events.on(render, 'afterRender', () => {
         context.fill();
 
         if (power < 0.5) {
-
             gradient.addColorStop(0, "#FFFF00");
             gradient.addColorStop(1, "#FFFF00");
-        }
-        else if (power < 0.9) {
-
+        } else if (power < 0.9) {
             gradient.addColorStop(0, "#FFFF00");
             gradient.addColorStop(1, "#FF8C00");
-        }
-        else {
-
+        } else {
             gradient.addColorStop(0.0, "#FFFF00");
             gradient.addColorStop(0.2, "#FF8C00");
             gradient.addColorStop(1.0, "#FF0000");
@@ -1222,10 +1219,8 @@ Matter.Events.on(render, 'afterRender', () => {
         context.strokeStyle = "#ffffffff";
         context.lineWidth = 3;
         context.stroke();
-
         context.setLineDash([]);
 
-        // -------- Bounce Direction --------
         if (!firstCoin) {
             let reflectX = dirX;
             let reflectY = dirY;
@@ -1263,7 +1258,7 @@ Matter.Events.on(render, 'afterRender', () => {
                 const dy = body.position.y - closestY;
                 const perpSq = dx * dx + dy * dy;
 
-                const safeDistance = 17; // striker radius (10) + coin radius (7)
+                const safeDistance = 17;
                 const safeDistanceSq = safeDistance * safeDistance;
 
                 if (perpSq <= safeDistanceSq && projection < nearestDistance) {
@@ -1273,16 +1268,6 @@ Matter.Events.on(render, 'afterRender', () => {
                     stopY = hitY + reflectY * (projection - gap);
                 }
             });
-
-            // Draw the bounce prediction line
-            // context.beginPath();
-            // context.moveTo(hitX, hitY);
-            // context.lineTo(stopX, stopY);
-            // context.setLineDash([8, 8]);
-            // context.strokeStyle = "rgba(255, 255, 255, 0.6)";
-            // context.lineWidth = 3;
-            // context.stroke();
-            // context.setLineDash([]);
         }
     }
     const x = player.position.x;
@@ -1313,7 +1298,6 @@ Matter.Events.on(render, 'afterRender', () => {
         context.fill();
     });
 
-    // Draw custom beautiful coins and striker
     allBodies.forEach(body => {
         if (
             body.label === "white" ||
@@ -1328,12 +1312,10 @@ Matter.Events.on(render, 'afterRender', () => {
     updateAndDrawParticles(context);
 
     if (messageTimer > 0) {
-
         const progress = 1 - (messageTimer / 120);
         const scale = Math.min(1, progress * 2);
 
         context.save();
-
         context.fillStyle = "rgba(0,0,0,0.35)";
         context.fillRect(0, 0, render.options.width, render.options.height);
 
@@ -1356,9 +1338,6 @@ Matter.Events.on(render, 'afterRender', () => {
         context.font = "bold 28px Arial";
         context.textAlign = "center";
         context.fillText(gameMessage.startsWith("FOUL") ? "⚠ FOUL!" : gameMessage, 0, -8);
-
-        // context.fillText("Striker Pocketed", 0, 22);
-
         context.restore();
 
         if (gameMessage !== "YOU WIN!" && gameMessage !== "YOU LOSE!") {
@@ -1367,7 +1346,6 @@ Matter.Events.on(render, 'afterRender', () => {
             messageTimer = Math.max(1, messageTimer - 1);
         }
     }
-
     context.restore();
 });
 
@@ -1382,6 +1360,7 @@ let startY = 260;
 let queenStatus = "board";
 let queenPocketedBy = null;
 let pocketedInCurrentShot = [];
+
 Matter.Events.on(engine, 'afterUpdate', () => {
     const pockets = [
         { x: 18, y: 18 }, { x: 18, y: 282 },
@@ -1406,14 +1385,11 @@ Matter.Events.on(engine, 'afterUpdate', () => {
                         spawnPocketParticles(pocket.x, pocket.y, body.label);
                         Matter.Body.setVelocity(body, { x: 0, y: 0 });
                         Matter.Body.setAngularVelocity(body, 0);
-                        // Temporarily place striker out of the pocket (at current startX, startY)
                         Matter.Body.setPosition(body, { x: startX, y: startY });
                     } else {
-
                         if (body.isPocketed) {
                             break;
                         }
-
                         body.isPocketed = true;
                         body.pocketStartFrame = 0;
                         body.targetPocket = { x: pocket.x, y: pocket.y };
@@ -1429,12 +1405,10 @@ Matter.Events.on(engine, 'afterUpdate', () => {
         }
     });
 
-    // Update animation for pocketed coins
     allBodies.forEach(body => {
         if (body.isPocketed && body.label !== 'striker') {
             body.pocketStartFrame = (body.pocketStartFrame || 0) + 1;
 
-            // Attract to pocket center
             let target = body.targetPocket;
             if (target) {
                 let dx = target.x - body.position.x;
@@ -1474,11 +1448,8 @@ Matter.Events.on(engine, 'afterUpdate', () => {
             opponentCoinsCount = pocketedInCurrentShot.filter(label => label === "white").length;
         }
 
-        // Determine if shot was a foul
         let isFoul = foul || strikerPocketed;
 
-        // Apply scoring for pocketed coins
-        // (Even on foul, coins pocketed remain pocketed, except the Queen)
         if (currentPlayer === 1) {
             player1Score += ownCoinsCount;
             player2Score += opponentCoinsCount;
@@ -1491,7 +1462,6 @@ Matter.Events.on(engine, 'afterUpdate', () => {
         document.getElementById("p2score").textContent = player2Score;
 
         if (isFoul) {
-            // Foul!
             let penaltyReturned = false;
             if (currentPlayer === 1) {
                 if (player1Score > 0) {
@@ -1509,18 +1479,13 @@ Matter.Events.on(engine, 'afterUpdate', () => {
                 }
             }
 
-            // If the queen was pocketed in this shot, she must return since it was a foul
             if (queenPocketed) {
                 returnCoinToBoard("queen");
                 queenStatus = "board";
                 queenPocketedBy = null;
-
                 document.getElementById("player1Queen");
-                // .style.display = "none";
                 document.getElementById("player2Queen");
-                // .style.display = "none";
             } else if (queenStatus === "awaiting_cover" && queenPocketedBy === currentPlayer) {
-                // If queen was awaiting cover and player fouled, queen is returned
                 returnCoinToBoard("queen");
                 queenStatus = "board";
                 queenPocketedBy = null;
@@ -1532,79 +1497,40 @@ Matter.Events.on(engine, 'afterUpdate', () => {
             earnedExtraTurn = false;
             foul = false;
         } else {
-            // No foul, check Queen and cover rules
             if (queenStatus === "awaiting_cover" && queenPocketedBy === currentPlayer) {
-
                 if (ownCoinsCount >= 1) {
-
-                    // Queen successfully covered
                     queenStatus = "covered";
                     queenPocketedBy = null;
-
                     document.getElementById("player" + currentPlayer + "Queen").style.display = "block";
-
-                    // showMessage("Queen Covered!");
                     earnedExtraTurn = true;
-
                 } else {
-
-                    // No own coin pocketed, return queen
                     returnCoinToBoard("queen");
-
                     queenStatus = "board";
                     queenPocketedBy = null;
-
                     document.getElementById("player1Queen").style.display = "none";
                     document.getElementById("player2Queen").style.display = "none";
-
                     showMessage("Queen Returned!");
                     earnedExtraTurn = false;
                 }
             } else if (queenPocketed) {
-                // Queen was pocketed in this shot!
                 if (ownCoinsCount > 0) {
-                    // Pocketed and covered in the same shot!
                     queenStatus = "covered";
                     queenPocketedBy = currentPlayer;
                     document.getElementById("player" + currentPlayer + "Queen").style.display = "block";
-                    // showMessage("Queen Pocketed & Covered!");
                     earnedExtraTurn = true;
-                }
-                else {
-
+                } else {
                     queenStatus = "awaiting_cover";
                     queenPocketedBy = currentPlayer;
                     document.getElementById("player" + currentPlayer + "Queen").style.display = "block";
-                    // showMessage("Queen Pocketed! Cover it next");
                     earnedExtraTurn = true;
                 }
             } else {
-                // Normal shot (no queen pocketed/awaiting cover)
                 if (ownCoinsCount > 0) {
                     earnedExtraTurn = true;
                 } else {
                     earnedExtraTurn = false;
                 }
             }
-
-            // CHECK RULE B: Cannot pocket last coin while Queen is still on board/not covered
-            // if (queenStatus !== "covered") {
-            //     if (currentPlayer === 1 && player1Score === 9) {
-            //         // Player 1 pocketed last coin, but Queen not covered!
-            //         player1Score--;
-            //         document.getElementById("p1score").textContent = player1Score;
-            //         returnCoinToBoard("white");
-            //         showMessage("Cover Queen before last coin!");
-            //         earnedExtraTurn = false;
-            //     } else if (currentPlayer === 2 && player2Score === 9) {
-            //         // Player 2 pocketed last coin, but Queen not covered!
-            //         player2Score--;
-            //         document.getElementById("p2score").textContent = player2Score;
-            //         returnCoinToBoard("black");
-            //         showMessage("Cover Queen before last coin!");
-            //         earnedExtraTurn = false;
-            //     }
-            // }
         }
 
         foul = false;
@@ -1623,12 +1549,9 @@ Matter.Events.on(engine, 'afterUpdate', () => {
         earnedExtraTurn = false;
         isInMotion = false;
 
-        // Reset striker position to center (X = 150) of active baseline and resolve overlaps
         syncObjectOnX(85);
-
         updateTurnIndicator();
 
-        // Check victory conditions (Only if Queen is covered)
         if (queenStatus === "covered") {
             if (player1Score === 9) {
                 showMessage("YOU WIN!");
@@ -1725,7 +1648,6 @@ Matter.Events.on(engine, 'afterUpdate', () => {
 });
 
 function syncObjectOnX(newX) {
-
     if (isInMotion || player1Score === 9 || player2Score === 9) return;
 
     newX = Math.max(0, Math.min(newX, 170));
@@ -1741,18 +1663,14 @@ function syncObjectOnX(newX) {
     const allBodies = Composite.allBodies(engine.world);
 
     while (true) {
-
         let blocked = false;
-
         allBodies.forEach(body => {
-
             if (
                 body !== player &&
                 (body.label === "white" ||
                     body.label === "black" ||
                     body.label === "queen")
             ) {
-
                 const dx = body.position.x - tempX;
                 const dy = body.position.y - startY;
 
@@ -1760,11 +1678,9 @@ function syncObjectOnX(newX) {
                     blocked = true;
                 }
             }
-
         });
 
         if (!blocked) break;
-
         tempX++;
     }
 
@@ -1784,7 +1700,6 @@ if (knobElement) {
         isDragging = true;
     });
 }
-
 window.addEventListener('mousemove', (event) => {
     if (!isDragging || !knobElement) return;
     const sliderRect = knobElement.parentElement.getBoundingClientRect();
@@ -1792,7 +1707,26 @@ window.addEventListener('mousemove', (event) => {
     syncObjectOnX(mouseX);
 });
 
+// Added Touch Slider event for phones
+if (knobElement) {
+    knobElement.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        if (e.cancelable) e.preventDefault();
+    }, { passive: false });
+}
+
+window.addEventListener('touchmove', (event) => {
+    if (!isDragging || !knobElement) return;
+    const sliderRect = knobElement.parentElement.getBoundingClientRect();
+    const touchX = event.touches[0].clientX - sliderRect.left;
+    syncObjectOnX(touchX);
+    if (event.cancelable) event.preventDefault();
+}, { passive: false });
+
 window.addEventListener('mouseup', () => {
+    isDragging = false;
+});
+window.addEventListener('touchend', () => {
     isDragging = false;
 });
 
@@ -1815,7 +1749,6 @@ Render.run(render);
 
 drawBoard();
 
-// Loop over all starting bodies and hide default rendering for custom drawing
 Composite.allBodies(engine.world).forEach(body => {
     if (
         body.label === "white" ||
@@ -1827,7 +1760,6 @@ Composite.allBodies(engine.world).forEach(body => {
     }
 });
 
-// Initialize the game state (center the striker and show the correct turn indicator)
 updateTurnIndicator();
 syncObjectOnX(85);
 

@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My game</title>
     <style>
+        canvas {
+            touch-action: none;
+        }
+
         body {
             margin: 0;
             background-image: url("./—Pngtree—dark blue galaxy starry background_321659.png");
@@ -13,8 +17,10 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+
             /* Keeps the game centered on screen */
         }
+
 
         #game-background {
             width: 500px;
@@ -48,7 +54,7 @@
         #outside-container {
             width: 190px;
             height: 20px;
-            background-color: #1c1c2c;
+            background-color: #2a2c1c;
             border-radius: 50px;
             border: 3px solid #555;
             position: absolute;
@@ -64,7 +70,7 @@
             position: absolute;
             width: 20px;
             height: 20px;
-            background-color: #ff5722;
+            background-color: #c56b0b;
             border-radius: 50%;
             cursor: grab;
             pointer-events: auto;
