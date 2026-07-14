@@ -81,7 +81,7 @@ const player = Bodies.circle(65, 260, 10, {
     density: 0.0025,
     plugin: { ccd: { toggled: true } },
     render: {
-        fillStyle: '#d49b00d3',
+        fillStyle: '#d99f00d3',
     }
 });
 
