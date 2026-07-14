@@ -624,7 +624,7 @@ Matter.Events.on(engine, "collisionStart", function (event) {
                 let newVelX = vel.x - (1 + bounceCoefficient) * speedAlongNormal * normal.x;
                 let newVelY = vel.y - (1 + bounceCoefficient) * speedAlongNormal * normal.y;
 
-                const minBounce = 0.3;
+                const minBounce = 0.1;
                 const currentBounceSpeed = Math.hypot(newVelX, newVelY);
                 if (currentBounceSpeed < minBounce && currentBounceSpeed > 0.01) {
                     const scale = minBounce / currentBounceSpeed;
