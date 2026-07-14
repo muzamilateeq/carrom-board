@@ -13,18 +13,21 @@
         body {
             margin: 0;
             background-image: url("./—Pngtree—dark blue galaxy starry background_321659.png");
+            background-size: cover;
+            background-position: center;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-
+            overflow: hidden;
+            touch-action: none;
             /* Keeps the game centered on screen */
         }
 
 
         #game-background {
             width: 500px;
-            height: 585px;
+            height: 100vh;
             background-image: url("./red-background-pic.avif");
             background-size: cover;
             background-position: center;
@@ -224,6 +227,15 @@
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
         <script src="game.js"></script>
+        <script>
+            function resizeGame() {
+                const bg = document.getElementById("game-background");
+                const scale = Math.min(window.innerWidth / 520, window.innerHeight / 620, 1);
+                bg.style.transform = `scale(${scale})`;
+            }
+            window.addEventListener("resize", resizeGame);
+            resizeGame();
+        </script>
     </div>
 
 </body>

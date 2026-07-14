@@ -41,27 +41,31 @@ let pageMouseX = 100;
 let pageMouseY = 100;
 window.addEventListener("mousemove", (e) => {
     const rect = render.canvas.getBoundingClientRect();
-    pageMouseX = e.clientX - rect.left;
-    pageMouseY = e.clientY - rect.top;
+    const scaleX = 300 / rect.width;
+    const scaleY = 300 / rect.height;
+    pageMouseX = (e.clientX - rect.left) * scaleX;
+    pageMouseY = (e.clientY - rect.top) * scaleY;
 });
 
 
 function getEventCoords(e) {
     const rect = render.canvas.getBoundingClientRect();
+    const scaleX = 300 / rect.width;
+    const scaleY = 300 / rect.height;
     if (e.touches && e.touches.length > 0) {
         return {
-            x: e.touches[0].clientX - rect.left,
-            y: e.touches[0].clientY - rect.top
+            x: (e.touches[0].clientX - rect.left) * scaleX,
+            y: (e.touches[0].clientY - rect.top) * scaleY
         };
     } else if (e.changedTouches && e.changedTouches.length > 0) {
         return {
-            x: e.changedTouches[0].clientX - rect.left,
-            y: e.changedTouches[0].clientY - rect.top
+            x: (e.changedTouches[0].clientX - rect.left) * scaleX,
+            y: (e.changedTouches[0].clientY - rect.top) * scaleY
         };
     }
     return {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
+        x: (e.clientX - rect.left) * scaleX,
+        y: (e.clientY - rect.top) * scaleY
     };
 }
 
@@ -622,7 +626,7 @@ Matter.Events.on(engine, "collisionStart", function (event) {
 
                 const minBounce = 0.3;
                 const currentBounceSpeed = Math.hypot(newVelX, newVelY);
-                if (currentBounceSpeed < minBounce && currentBounceSpeed > 0.02) {
+                if (currentBounceSpeed < minBounce && currentBounceSpeed > 0.01) {
                     const scale = minBounce / currentBounceSpeed;
                     newVelX *= scale;
                     newVelY *= scale;
@@ -680,7 +684,7 @@ let startMouseY = 0;
 
 const dragThreshold = 5;
 const maxDragDistance = 50;
-const maxSpeed = 17;
+const maxSpeed = 19;
 
 function handleStart(e) {
     if (isInMotion || player1Score === 9 || player2Score === 9) return;
@@ -1703,7 +1707,8 @@ if (knobElement) {
 window.addEventListener('mousemove', (event) => {
     if (!isDragging || !knobElement) return;
     const sliderRect = knobElement.parentElement.getBoundingClientRect();
-    const mouseX = event.clientX - sliderRect.left;
+    const scaleX = 190 / sliderRect.width;
+    const mouseX = (event.clientX - sliderRect.left) * scaleX;
     syncObjectOnX(mouseX);
 });
 
@@ -1718,7 +1723,8 @@ if (knobElement) {
 window.addEventListener('touchmove', (event) => {
     if (!isDragging || !knobElement) return;
     const sliderRect = knobElement.parentElement.getBoundingClientRect();
-    const touchX = event.touches[0].clientX - sliderRect.left;
+    const scaleX = 190 / sliderRect.width;
+    const touchX = (event.touches[0].clientX - sliderRect.left) * scaleX;
     syncObjectOnX(touchX);
     if (event.cancelable) event.preventDefault();
 }, { passive: false });
