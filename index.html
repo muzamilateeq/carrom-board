@@ -32,6 +32,9 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         #game-container {
@@ -60,10 +63,8 @@
             background-color: #2a2c1c;
             border-radius: 50px;
             border: 3px solid #555;
-            position: absolute;
-            top: 90%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            position: relative;
+            margin: 30px auto 0 auto;
             z-index: 10;
             pointer-events: none;
             overflow: hidden;
@@ -88,7 +89,7 @@
 
         #game-wrapper {
             width: 300px;
-            margin: 40px auto;
+            transform-origin: center center;
         }
 
         /* Scoreboard Layout Fixes */
@@ -172,6 +173,17 @@
             background: black;
             border: 2px solid #666;
         }
+
+        /* Mobile specific styles to show only red background */
+        @media (max-width: 768px) {
+            body {
+                background-image: url("./red-background-pic.avif");
+            }
+            #game-background {
+                width: 100%;
+                background-image: none;
+            }
+        }
     </style>
 </head>
 
@@ -229,9 +241,10 @@
         <script src="game.js"></script>
         <script>
             function resizeGame() {
-                const bg = document.getElementById("game-background");
-                const scale = Math.min(window.innerWidth / 520, window.innerHeight / 620, 1);
-                bg.style.transform = `scale(${scale})`;
+                const wrapper = document.getElementById("game-wrapper");
+                // Cap the scale at 1.0 to prevent overflowing on desktop, and use 530 for height to account for full padding
+                const scale = Math.min(window.innerWidth / 340, window.innerHeight / 530, 1);
+                wrapper.style.transform = `scale(${scale})`;
             }
             window.addEventListener("resize", resizeGame);
             resizeGame();
