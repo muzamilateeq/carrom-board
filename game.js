@@ -72,307 +72,68 @@ function getEventCoords(e) {
 const player = Bodies.circle(65, 260, 10, {
     id: 'striker',
     label: 'striker',
-    inertia: Infinity,
-    frictionAir: 0.03,
-    restitution: 0.6,
-    slop: 0,
-    friction: 0,
-    frictionStatic: 0,
-    density: 0.0025,
+    inertia: GAME_CONFIG.striker.inertia,
+    frictionAir: GAME_CONFIG.striker.frictionAir,
+    restitution: GAME_CONFIG.striker.restitution,
+    slop: GAME_CONFIG.striker.slop,
+    friction: GAME_CONFIG.striker.friction,
+    frictionStatic: GAME_CONFIG.striker.frictionStatic,
+    density: GAME_CONFIG.striker.density,
     plugin: { ccd: { toggled: true } },
     render: {
         fillStyle: '#d99f00d3',
     }
 });
-
 const target = Bodies.circle(150, 150, 7, {
     id: 'queen',
     label: 'queen',
-    inertia: Infinity,
-    frictionAir: 0.03,
-    friction: 0,
-    frictionStatic: 0,
-    restitution: 0.7,
-    density: 0.001,
+    inertia: GAME_CONFIG.queen.inertia,
+    frictionAir: GAME_CONFIG.queen.frictionAir,
+    friction: GAME_CONFIG.queen.friction,
+    frictionStatic: GAME_CONFIG.queen.frictionStatic,
+    restitution: GAME_CONFIG.queen.restitution,
+    density: GAME_CONFIG.queen.density,
+    slop: GAME_CONFIG.queen.slop,
     plugin: { ccd: { toggled: true } },
     render: {
         fillStyle: '#f30505ff'
     }
 });
 
-const target2 = Bodies.circle(150, 165, 7, {
-    id: 'white_1',
-    label: 'white',
-    inertia: Infinity,
-    restitution: 0.7,
-    friction: 0,
-    frictionAir: 0.02,
-    frictionStatic: 0,
-    slop: 0,
-    density: 0.001,
-    plugin: { ccd: { toggled: true } },
-    render: {
-        fillStyle: '#f8f8f8',
-        strokeStyle: '#000000',
-        lineWidth: 1
-    }
-});
-const target3 = Bodies.circle(150, 180, 7, {
-    id: 'white_2', label: 'white', inertia: Infinity, restitution: 0.7,
-    friction: 0,
-    frictionAir: 0.029,
-    frictionStatic: 0,
-    density: 0.001,
-    slop: 0,
-    plugin: { ccd: { toggled: true } },
-    render: {
-        fillStyle: '#f8f8f8',
-        strokeStyle: '#000000ff',
-        lineWidth: 1
-    }
-});
 
-const target4 = Bodies.circle(150, 120, 7, {
-    id: 'white_3', label: 'white', inertia: Infinity, restitution: 0.7,
-    friction: 0,
-    frictionAir: 0.029,
-    frictionStatic: 0,
-    density: 0.001,
-    slop: 0,
-    plugin: { ccd: { toggled: true } },
-    render: {
-        fillStyle: '#f8f8f8',
-        strokeStyle: '#000000ff',
-        lineWidth: 1
-    }
-});
+const coinLayout = [
+    { x: 150, y: 165, type: 'white' }, { x: 150, y: 180, type: 'white' },
+    { x: 150, y: 120, type: 'white' }, { x: 165, y: 140, type: 'white' },
+    { x: 180, y: 130, type: 'white' }, { x: 135, y: 140, type: 'white' },
+    { x: 120, y: 130, type: 'white' }, { x: 120, y: 170, type: 'white' },
+    { x: 180, y: 170, type: 'white' },
+    { x: 150, y: 135, type: 'black' }, { x: 135, y: 125, type: 'black' },
+    { x: 165, y: 125, type: 'black' }, { x: 180, y: 150, type: 'black' },
+    { x: 120, y: 150, type: 'black' }, { x: 135, y: 160, type: 'black' },
+    { x: 165, y: 160, type: 'black' }, { x: 135, y: 175, type: 'black' },
+    { x: 165, y: 175, type: 'black' }
+];
 
-const target5 = Bodies.circle(165, 140, 7, {
-    id: 'white_4', label: 'white', inertia: Infinity, restitution: 0.7,
-    friction: 0,
-    frictionAir: 0.029,
-    frictionStatic: 0,
-    density: 0.001,
-    slop: 0,
-    plugin: { ccd: { toggled: true } },
-    render: {
-        fillStyle: '#f8f8f8',
-        strokeStyle: '#000000ff',
-        lineWidth: 1
-    }
+const coins = coinLayout.map((coin, index) => {
+    const isWhite = coin.type === 'white';
+    return Bodies.circle(coin.x, coin.y, 7, {
+        id: `${coin.type}_${index + 1}`,
+        label: coin.type,
+        inertia: GAME_CONFIG.coin.inertia,
+        restitution: GAME_CONFIG.coin.restitution,
+        friction: GAME_CONFIG.coin.friction,
+        frictionAir: GAME_CONFIG.coin.frictionAir,
+        frictionStatic: GAME_CONFIG.coin.frictionStatic,
+        density: GAME_CONFIG.coin.density,
+        slop: GAME_CONFIG.coin.slop,
+        plugin: { ccd: { toggled: true } },
+        render: {
+            fillStyle: isWhite ? '#f8f8f8' : '#222222',
+            strokeStyle: isWhite ? '#000000ff' : '#ffffffff',
+            lineWidth: 1
+        }
+    });
 });
-
-const target6 = Bodies.circle(180, 130, 7, {
-    id: 'white_5', label: 'white', inertia: Infinity, restitution: 0.7,
-    friction: 0,
-    frictionAir: 0.029,
-    density: 0.001,
-    frictionStatic: 0,
-    slop: 0,
-    plugin: { ccd: { toggled: true } },
-    render: {
-        fillStyle: '#f8f8f8',
-        strokeStyle: '#000000ff',
-        lineWidth: 1
-    }
-});
-
-const target7 = Bodies.circle(135, 140, 7, {
-    id: 'white_6', label: 'white', inertia: Infinity, restitution: 0.7,
-    friction: 0,
-    frictionAir: 0.029,
-    frictionStatic: 0,
-    density: 0.001,
-    slop: 0,
-    plugin: { ccd: { toggled: true } },
-    render: {
-        fillStyle: '#f8f8f8',
-        strokeStyle: '#000000ff',
-        lineWidth: 1
-    }
-});
-
-const target8 = Bodies.circle(120, 130, 7, {
-    id: 'white_7', label: 'white', inertia: Infinity, restitution: 0.7,
-    friction: 0,
-    frictionAir: 0.029,
-    frictionStatic: 0,
-    density: 0.001,
-    slop: 0,
-    plugin: { ccd: { toggled: true } },
-    render: {
-        fillStyle: '#f8f8f8',
-        strokeStyle: '#000000ff',
-        lineWidth: 1
-    }
-});
-
-const target9 = Bodies.circle(120, 170, 7, {
-    id: 'white_8', label: 'white', inertia: Infinity, restitution: 0.7,
-    friction: 0,
-    frictionAir: 0.029,
-    frictionStatic: 0,
-    density: 0.001,
-    slop: 0,
-    plugin: { ccd: { toggled: true } },
-    render: {
-        fillStyle: '#f8f8f8',
-        strokeStyle: '#000000ff',
-        lineWidth: 1
-    }
-});
-
-const target10 = Bodies.circle(180, 170, 7, {
-    id: 'white_9', label: 'white', inertia: Infinity, restitution: 0.7,
-    friction: 0,
-    frictionAir: 0.029,
-    frictionStatic: 0,
-    density: 0.001,
-    slop: 0,
-    plugin: { ccd: { toggled: true } },
-    render: {
-        fillStyle: '#f8f8f8',
-        strokeStyle: '#000000ff',
-        lineWidth: 1
-    }
-});
-
-// --- OUTER RING (9 BLACK PIECES) ---
-const target11 = Bodies.circle(150, 135, 7, {
-    id: 'black_1', label: 'black', inertia: Infinity, restitution: 0.7,
-    friction: 0,
-    frictionAir: 0.029,
-    frictionStatic: 0,
-    density: 0.001,
-    slop: 0,
-    plugin: { ccd: { toggled: true } },
-    render: {
-        fillStyle: '#222222',
-        strokeStyle: '#ffffffff',
-        lineWidth: 1
-    }
-});
-
-const target12 = Bodies.circle(135, 125, 7, {
-    id: 'black_2', label: 'black', inertia: Infinity, restitution: 0.7,
-    friction: 0,
-    frictionAir: 0.029,
-    frictionStatic: 0,
-    density: 0.001,
-    slop: 0,
-    plugin: { ccd: { toggled: true } },
-    render: {
-        fillStyle: '#222222',
-        strokeStyle: '#ffffffff',
-        lineWidth: 1
-    }
-});
-
-const target13 = Bodies.circle(165, 125, 7, {
-    id: 'black_3', label: 'black', inertia: Infinity, restitution: 0.7,
-    friction: 0,
-    frictionAir: 0.029,
-    frictionStatic: 0,
-    density: 0.001,
-    slop: 0,
-    plugin: { ccd: { toggled: true } },
-    render: {
-        fillStyle: '#222222',
-        strokeStyle: '#ffffffff',
-        lineWidth: 1
-    }
-});
-
-const target14 = Bodies.circle(180, 150, 7, {
-    id: 'black_4', label: 'black', inertia: Infinity, restitution: 0.7,
-    friction: 0,
-    frictionAir: 0.029,
-    frictionStatic: 0,
-    density: 0.001,
-    slop: 0,
-    plugin: { ccd: { toggled: true } },
-    render: {
-        fillStyle: '#222222',
-        strokeStyle: '#ffffffff',
-        lineWidth: 1
-    }
-});
-
-const target15 = Bodies.circle(120, 150, 7, {
-    id: 'black_5', label: 'black', inertia: Infinity, restitution: 0.7,
-    friction: 0,
-    frictionAir: 0.029,
-    frictionStatic: 0,
-    density: 0.001,
-    slop: 0,
-    plugin: { ccd: { toggled: true } },
-    render: {
-        fillStyle: '#222222',
-        strokeStyle: '#ffffffff',
-        lineWidth: 1
-    }
-});
-
-const target16 = Bodies.circle(135, 160, 7, {
-    id: 'black_6', label: 'black', inertia: Infinity, restitution: 0.7,
-    friction: 0,
-    frictionAir: 0.029,
-    frictionStatic: 0,
-    density: 0.001,
-    slop: 0,
-    plugin: { ccd: { toggled: true } },
-    render: {
-        fillStyle: '#222222',
-        strokeStyle: '#ffffffff',
-        lineWidth: 1
-    }
-});
-
-const target17 = Bodies.circle(165, 160, 7, {
-    id: 'black_7', label: 'black', inertia: Infinity, restitution: 0.7,
-    friction: 0,
-    frictionAir: 0.029,
-    frictionStatic: 0,
-    density: 0.001,
-    slop: 0,
-    plugin: { ccd: { toggled: true } },
-    render: {
-        fillStyle: '#222222',
-        strokeStyle: '#ffffffff',
-        lineWidth: 1
-    }
-});
-
-const target18 = Bodies.circle(135, 175, 7, {
-    id: 'black_8', label: 'black', inertia: Infinity, restitution: 0.7,
-    friction: 0,
-    frictionAir: 0.029,
-    frictionStatic: 0,
-    density: 0.001,
-    slop: 0,
-    plugin: { ccd: { toggled: true } },
-    render: {
-        fillStyle: '#222222',
-        strokeStyle: '#ffffffff',
-        lineWidth: 1
-    }
-});
-
-const target19 = Bodies.circle(165, 175, 7, {
-    id: 'black_9', label: 'black', inertia: Infinity, restitution: 0.7,
-    friction: 0,
-    frictionAir: 0.029,
-    frictionStatic: 0,
-    density: 0.001,
-    slop: 0,
-    plugin: { ccd: { toggled: true } },
-    render: {
-        fillStyle: '#222222',
-        strokeStyle: '#ffffffff',
-        lineWidth: 1
-    }
-});
-
 const topWall = Bodies.rectangle(150, 2, 300, 25, {
     restitution: 0.5,
     friction: 0,
@@ -490,12 +251,12 @@ const circle8 = Bodies.circle(235, 40, 8, {
     }
 });
 
+
 Composite.add(engine.world, [
     circle1, circle2, circle3, circle4, circle5, circle6, circle7, circle8,
     rectangle1, rectangle2, rectangle3, rectangle4,
-    topWall, bottomWall, leftWall, rightWall, player,
-    target, target2, target3, target4, target5, target6, target7, target8, target9, target10,
-    target11, target12, target13, target14, target15, target16, target17, target18, target19
+    topWall, bottomWall, leftWall, rightWall, player, target,
+    ...coins
 ]);
 let activeParticles = [];
 
@@ -1600,17 +1361,17 @@ Matter.Events.on(engine, 'afterUpdate', () => {
             newY = basePosition.y + Math.sin(angle) * distance;
             currentTry++;
         }
-
         let newCoin;
         if (label === "white") {
             newCoin = Bodies.circle(newX, newY, 7, {
                 label: 'white',
-                inertia: Infinity,
-                restitution: 0.5,
-                friction: 0,
-                frictionAir: 0.029,
-                frictionStatic: 0,
-                slop: 0,
+                inertia: GAME_CONFIG.coin.inertia,
+                restitution: GAME_CONFIG.coin.restitution,
+                friction: GAME_CONFIG.coin.friction,
+                frictionAir: GAME_CONFIG.coin.frictionAir,
+                frictionStatic: GAME_CONFIG.coin.frictionStatic,
+                density: GAME_CONFIG.coin.density,
+                slop: GAME_CONFIG.coin.slop,
                 plugin: { ccd: { toggled: true } },
                 render: {
                     visible: false
@@ -1619,12 +1380,13 @@ Matter.Events.on(engine, 'afterUpdate', () => {
         } else if (label === "black") {
             newCoin = Bodies.circle(newX, newY, 7, {
                 label: 'black',
-                inertia: Infinity,
-                restitution: 0.5,
-                friction: 0,
-                frictionAir: 0.029,
-                frictionStatic: 0,
-                slop: 0,
+                inertia: GAME_CONFIG.coin.inertia,
+                restitution: GAME_CONFIG.coin.restitution,
+                friction: GAME_CONFIG.coin.friction,
+                frictionAir: GAME_CONFIG.coin.frictionAir,
+                frictionStatic: GAME_CONFIG.coin.frictionStatic,
+                density: GAME_CONFIG.coin.density,
+                slop: GAME_CONFIG.coin.slop,
                 plugin: { ccd: { toggled: true } },
                 render: {
                     visible: false
@@ -1633,11 +1395,13 @@ Matter.Events.on(engine, 'afterUpdate', () => {
         } else if (label === "queen") {
             newCoin = Bodies.circle(newX, newY, 7, {
                 label: 'queen',
-                inertia: Infinity,
-                frictionAir: 0.03,
-                friction: 0,
-                frictionStatic: 0,
-                restitution: 0.1,
+                inertia: GAME_CONFIG.queen.inertia,
+                frictionAir: GAME_CONFIG.queen.frictionAir,
+                friction: GAME_CONFIG.queen.friction,
+                frictionStatic: GAME_CONFIG.queen.frictionStatic,
+                restitution: GAME_CONFIG.queen.restitution,
+                density: GAME_CONFIG.queen.density,
+                slop: GAME_CONFIG.queen.slop,
                 plugin: { ccd: { toggled: true } },
                 render: {
                     visible: false
