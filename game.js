@@ -12,8 +12,8 @@ const render = Render.create({
     element: container,
     engine: engine,
     options: {
-        width: 300,
-        height: 300,
+        width: 600,
+        height: 600,
         wireframes: false,
         background: 'transparent'
     }
@@ -23,8 +23,8 @@ let aimAnimation = 0;
 let shinePos = -80;
 
 const bgCanvas = document.createElement("canvas");
-bgCanvas.width = 300;
-bgCanvas.height = 300;
+bgCanvas.width = 600;
+bgCanvas.height = 600;
 
 bgCanvas.style.position = "absolute";
 bgCanvas.style.left = render.canvas.offsetLeft + "px";
@@ -37,12 +37,24 @@ render.canvas.style.zIndex = "1";
 render.canvas.parentNode.insertBefore(bgCanvas, render.canvas);
 
 const bgCtx = bgCanvas.getContext("2d");
+
+const boardImg = new Image();
+boardImg.src = './Assets/structure/Board_.png';
+const whiteTokenImg = new Image();
+whiteTokenImg.src = './Assets/structure/White-Token.png';
+const blackTokenImg = new Image();
+blackTokenImg.src = './Assets/structure/Black-Token.png';
+const redTokenImg = new Image();
+redTokenImg.src = './Assets/structure/Red-Toekn.png';
+const strikerImg = new Image();
+strikerImg.src = './Assets/structure/Stagger.png';
+
 let pageMouseX = 100;
 let pageMouseY = 100;
 window.addEventListener("mousemove", (e) => {
     const rect = render.canvas.getBoundingClientRect();
-    const scaleX = 300 / rect.width;
-    const scaleY = 300 / rect.height;
+    const scaleX = 600 / rect.width;
+    const scaleY = 600 / rect.height;
     pageMouseX = (e.clientX - rect.left) * scaleX;
     pageMouseY = (e.clientY - rect.top) * scaleY;
 });
@@ -50,8 +62,8 @@ window.addEventListener("mousemove", (e) => {
 
 function getEventCoords(e) {
     const rect = render.canvas.getBoundingClientRect();
-    const scaleX = 300 / rect.width;
-    const scaleY = 300 / rect.height;
+    const scaleX = 600 / rect.width;
+    const scaleY = 600 / rect.height;
     if (e.touches && e.touches.length > 0) {
         return {
             x: (e.touches[0].clientX - rect.left) * scaleX,
@@ -69,187 +81,6 @@ function getEventCoords(e) {
     };
 }
 
-const player = Bodies.circle(65, 260, 10, {
-    id: 'striker',
-    label: 'striker',
-    inertia: GAME_CONFIG.striker.inertia,
-    frictionAir: GAME_CONFIG.striker.frictionAir,
-    restitution: GAME_CONFIG.striker.restitution,
-    slop: GAME_CONFIG.striker.slop,
-    friction: GAME_CONFIG.striker.friction,
-    frictionStatic: GAME_CONFIG.striker.frictionStatic,
-    density: GAME_CONFIG.striker.density,
-    plugin: { ccd: { toggled: true } },
-    render: {
-        fillStyle: '#d99f00d3',
-    }
-});
-const target = Bodies.circle(150, 150, 7, {
-    id: 'queen',
-    label: 'queen',
-    inertia: GAME_CONFIG.queen.inertia,
-    frictionAir: GAME_CONFIG.queen.frictionAir,
-    friction: GAME_CONFIG.queen.friction,
-    frictionStatic: GAME_CONFIG.queen.frictionStatic,
-    restitution: GAME_CONFIG.queen.restitution,
-    density: GAME_CONFIG.queen.density,
-    slop: GAME_CONFIG.queen.slop,
-    plugin: { ccd: { toggled: true } },
-    render: {
-        fillStyle: '#f30505ff'
-    }
-});
-
-
-const coinLayout = [
-    { x: 150, y: 165, type: 'white' }, { x: 150, y: 180, type: 'white' },
-    { x: 150, y: 120, type: 'white' }, { x: 165, y: 140, type: 'white' },
-    { x: 180, y: 130, type: 'white' }, { x: 135, y: 140, type: 'white' },
-    { x: 120, y: 130, type: 'white' }, { x: 120, y: 170, type: 'white' },
-    { x: 180, y: 170, type: 'white' },
-    { x: 150, y: 135, type: 'black' }, { x: 135, y: 125, type: 'black' },
-    { x: 165, y: 125, type: 'black' }, { x: 180, y: 150, type: 'black' },
-    { x: 120, y: 150, type: 'black' }, { x: 135, y: 160, type: 'black' },
-    { x: 165, y: 160, type: 'black' }, { x: 135, y: 175, type: 'black' },
-    { x: 165, y: 175, type: 'black' }
-];
-
-const coins = coinLayout.map((coin, index) => {
-    const isWhite = coin.type === 'white';
-    return Bodies.circle(coin.x, coin.y, 7, {
-        id: `${coin.type}_${index + 1}`,
-        label: coin.type,
-        inertia: GAME_CONFIG.coin.inertia,
-        restitution: GAME_CONFIG.coin.restitution,
-        friction: GAME_CONFIG.coin.friction,
-        frictionAir: GAME_CONFIG.coin.frictionAir,
-        frictionStatic: GAME_CONFIG.coin.frictionStatic,
-        density: GAME_CONFIG.coin.density,
-        slop: GAME_CONFIG.coin.slop,
-        plugin: { ccd: { toggled: true } },
-        render: {
-            fillStyle: isWhite ? '#f8f8f8' : '#222222',
-            strokeStyle: isWhite ? '#000000ff' : '#ffffffff',
-            lineWidth: 1
-        }
-    });
-});
-const topWall = Bodies.rectangle(150, 2, 300, 25, {
-    restitution: 0.5,
-    friction: 0,
-    frictionStatic: 0,
-    slop: 0,
-    isStatic: true, render: { fillStyle: '#4d2d18' }
-});
-const bottomWall = Bodies.rectangle(150, 298, 300, 25, {
-    restitution: 0.5,
-    friction: 0,
-    frictionStatic: 0,
-    slop: 0,
-    isStatic: true, render: { fillStyle: '#4d2d18' }
-});
-const leftWall = Bodies.rectangle(2, 150, 25, 300, {
-    restitution: 0.5,
-    friction: 0,
-    frictionStatic: 0,
-    slop: 0,
-    isStatic: true, render: { fillStyle: '#4d2d18' }
-});
-const rightWall = Bodies.rectangle(298, 150, 25, 300, {
-    restitution: 0.5,
-    friction: 0,
-    frictionStatic: 0,
-    slop: 0,
-    isStatic: true, render: { fillStyle: '#4d2d18' }
-});
-
-const rectangle1 = Bodies.rectangle(150, 40, 190, 20, {
-    isSensor: true, isStatic: true, chamfer: { radius: 10 }, render: {
-        fillStyle: 'transparent',
-        strokeStyle: '#4D2D18',
-        lineWidth: 2
-    }
-});
-const rectangle2 = Bodies.rectangle(150, 260, 190, 20, {
-    isSensor: true, isStatic: true, chamfer: { radius: 10 }, render: {
-        fillStyle: 'transparent',
-        strokeStyle: '#4D2D18',
-        lineWidth: 2
-    }
-});
-const rectangle3 = Bodies.rectangle(40, 150, 20, 190, {
-    isSensor: true, isStatic: true, chamfer: { radius: 10 }, render: {
-        fillStyle: 'transparent',
-        strokeStyle: '#4D2D18',
-        lineWidth: 2
-    }
-});
-const rectangle4 = Bodies.rectangle(260, 150, 20, 190, {
-    isSensor: true, isStatic: true, chamfer: { radius: 10 }, render: {
-        fillStyle: 'transparent',
-        strokeStyle: '#4D2D18',
-        lineWidth: 2
-    }
-});
-
-const circle1 = Bodies.circle(260, 65, 8, {
-    isStatic: true,
-    isSensor: true,
-    render: {
-        fillStyle: "#4d2d18",
-    }
-});
-const circle2 = Bodies.circle(260, 235, 8, {
-    isStatic: true,
-    isSensor: true,
-    render: {
-        fillStyle: "#4d2d18",
-    }
-});
-const circle3 = Bodies.circle(40, 65, 8, {
-    isStatic: true,
-    isSensor: true,
-    render: {
-        fillStyle: "#4d2d18",
-    }
-});
-const circle4 = Bodies.circle(40, 235, 8, {
-    isStatic: true,
-    isSensor: true,
-    render: {
-        fillStyle: "#4d2d18",
-    }
-});
-const circle5 = Bodies.circle(65, 260, 8, {
-    isStatic: true,
-    isSensor: true,
-    render: {
-        fillStyle: "#4d2d18",
-    }
-});
-
-const circle6 = Bodies.circle(235, 260, 8, {
-    isStatic: true,
-    isSensor: true,
-    render: {
-        fillStyle: "#4d2d18",
-    }
-});
-const circle7 = Bodies.circle(65, 40, 8, {
-    isStatic: true,
-    isSensor: true,
-    render: {
-        fillStyle: "#4d2d18",
-    }
-});
-
-const circle8 = Bodies.circle(235, 40, 8, {
-    isStatic: true,
-    isSensor: true,
-    render: {
-        fillStyle: "#4d2d18",
-    }
-});
 
 
 Composite.add(engine.world, [
@@ -433,7 +264,6 @@ Matter.Events.on(engine, "collisionStart", function (event) {
 });
 
 const mouse = Mouse.create(render.canvas);
-
 let isAiming = false;
 let isInMotion = false;
 let gameMessage = "";
@@ -443,9 +273,9 @@ let dragStarted = false;
 let startMouseX = 0;
 let startMouseY = 0;
 
-const dragThreshold = 5;
-const maxDragDistance = 50;
-const maxSpeed = 19;
+const dragThreshold = 10;
+const maxDragDistance = 100;
+const maxSpeed = 38;
 
 function handleStart(e) {
     if (isInMotion || player1Score === 9 || player2Score === 9) return;
@@ -475,11 +305,9 @@ function handleMove(e) {
     if (e.cancelable) e.preventDefault();
 
     if (dragStarted) return;
-
     const dx = coords.x - startMouseX;
     const dy = coords.y - startMouseY;
     const moved = Math.hypot(dx, dy);
-
     if (moved > dragThreshold) {
         dragStarted = true;
         isAiming = true;
@@ -543,87 +371,16 @@ function showMessage(text) {
 
 function drawBoard() {
     const context = bgCtx;
-
-    context.beginPath();
-    context.arc(150, 150, 42, 0, 2 * Math.PI);
-    context.strokeStyle = 'rgba(168, 0, 0, 1)';
-    context.lineWidth = 3;
-    context.stroke();
-
-    context.beginPath();
-    context.arc(150, 150, 38, 0, 2 * Math.PI);
-    context.strokeStyle = 'rgba(180, 0, 0, 0.7)';
-    context.lineWidth = 1;
-    context.stroke();
-
-    let cornerSetups = [
-        { cx: 54, cy: 54, signX: 1, signY: 1, angle: Math.PI * 0.25 },
-        { cx: 246, cy: 54, signX: -1, signY: 1, angle: Math.PI * 0.75 },
-        { cx: 54, cy: 246, signX: 1, signY: -1, angle: Math.PI * -0.25 },
-        { cx: 246, cy: 246, signX: -1, signY: -1, angle: Math.PI * -0.75 }
-    ];
-
-    cornerSetups.forEach(c => {
-        let startX = c.cx - Math.cos(c.angle) * 18;
-        let startY = c.cy - Math.sin(c.angle) * 18;
-        let endX = c.cx + Math.cos(c.angle) * 32;
-        let endY = c.cy + Math.sin(c.angle) * 32;
-
-        context.beginPath();
-        context.moveTo(startX, startY);
-        context.lineTo(endX, endY);
-        context.strokeStyle = 'rgba(110, 69, 38, 0.65)';
-        context.lineWidth = 1.2;
-        context.stroke();
-
-        context.beginPath();
-        context.arc(endX, endY, 10, 0, 2 * Math.PI);
-        context.stroke();
-        context.beginPath();
-        context.arc(endX, endY, 1, 0, 2 * Math.PI);
-        context.fillStyle = 'rgba(110, 69, 38, 0.8)';
-        context.fill();
-
-        let fx = c.cx - Math.cos(c.angle) * 16;
-        let fy = c.cy - Math.sin(c.angle) * 16;
-
-        for (let i = 0; i < 8; i++) {
-            let petAngle = (i * Math.PI) / 4;
-            context.beginPath();
-            context.arc(fx + Math.cos(petAngle) * 5, fy + Math.sin(petAngle) * 5, 3, 0, 2 * Math.PI);
-            context.strokeStyle = 'rgba(110, 69, 38, 0.5)';
-            context.lineWidth = 1;
-            context.stroke();
-        }
-        context.beginPath();
-        context.arc(fx, fy, 4, 0, 2 * Math.PI);
-        context.stroke();
-    });
-
-    let pockets = [8, 292];
-    pockets.forEach(x => {
-        pockets.forEach(y => {
-            context.beginPath();
-            context.arc(x, y, 28, 0, 2 * Math.PI);
-            context.fillStyle = '#111111';
-            context.fill();
-
-            context.beginPath();
-            context.arc(x, y, 24, 0, 2 * Math.PI);
-            context.strokeStyle = '#c5a059';
-            context.lineWidth = 3;
-            context.stroke();
-
-            let pocketGrad = context.createRadialGradient(x, y, 10, x, y, 25);
-            pocketGrad.addColorStop(0, '#000000');
-            pocketGrad.addColorStop(1, '#222222');
-            context.beginPath();
-            context.arc(x, y, 22, 0, 2 * Math.PI);
-            context.fillStyle = pocketGrad;
-            context.fill();
-        });
-    });
-};
+    if (boardImg.complete) {
+        context.clearRect(0, 0, 600, 600);
+        context.drawImage(boardImg, 38, 75, 1004, 1004, 0, 0, 600, 600);
+    } else {
+        boardImg.onload = () => {
+            context.clearRect(0, 0, 600, 600);
+            context.drawImage(boardImg, 38, 75, 1004, 1004, 0, 0, 600, 600);
+        };
+    }
+}
 
 function drawCustomBody(context, body) {
     let pos = body.position;
@@ -633,124 +390,37 @@ function drawCustomBody(context, body) {
     }
 
     let r = body.circleRadius || radius;
-
-    context.save();
-    context.shadowColor = "rgba(0, 0, 0, 0.4)";
-    context.shadowBlur = 4;
-    context.shadowOffsetX = 2;
-    context.shadowOffsetY = 2;
-
-    let opacity = body.render.opacity !== undefined ? body.render.opacity : 1.0;
-    context.globalAlpha = opacity;
-
-    if (body.label === "white") {
-        let grad = context.createRadialGradient(pos.x - r * 0.3, pos.y - r * 0.3, r * 0.1, pos.x, pos.y, r);
-        grad.addColorStop(0, "#ffffff");
-        grad.addColorStop(0.3, "#f4eee1");
-        grad.addColorStop(0.8, "#dfd5c2");
-        grad.addColorStop(1, "#c0b198");
-
-        context.beginPath();
-        context.arc(pos.x, pos.y, r, 0, Math.PI * 2);
-        context.fillStyle = grad;
-        context.fill();
-
-        context.shadowColor = "transparent";
-        context.beginPath();
-        context.arc(pos.x, pos.y, r * 0.55, 0, Math.PI * 2);
-        context.strokeStyle = "rgba(139, 90, 43, 0.4)";
-        context.lineWidth = 1.2;
-        context.stroke();
-
-        context.beginPath();
-        context.arc(pos.x, pos.y, r * 0.25, 0, Math.PI * 2);
-        context.fillStyle = "rgba(139, 90, 43, 0.65)";
-        context.fill();
-
-    } else if (body.label === "black") {
-        let grad = context.createRadialGradient(pos.x - r * 0.3, pos.y - r * 0.3, r * 0.1, pos.x, pos.y, r);
-        grad.addColorStop(0, "#4f4f4f");
-        grad.addColorStop(0.4, "#2d2d2d");
-        grad.addColorStop(1, "#121212");
-
-        context.beginPath();
-        context.arc(pos.x, pos.y, r, 0, Math.PI * 2);
-        context.fillStyle = grad;
-        context.fill();
-
-        context.shadowColor = "transparent";
-        context.beginPath();
-        context.arc(pos.x, pos.y, r * 0.55, 0, Math.PI * 2);
-        context.strokeStyle = "rgba(255, 255, 255, 0.25)";
-        context.lineWidth = 1.0;
-        context.stroke();
-
-        context.beginPath();
-        context.arc(pos.x, pos.y, r * 0.25, 0, Math.PI * 2);
-        context.fillStyle = "rgba(255, 255, 255, 0.4)";
-        context.fill();
-
+    if (body.label === "striker") {
+        r *= GAME_CONFIG.striker.visualScale;
     } else if (body.label === "queen") {
-        let grad = context.createRadialGradient(pos.x - r * 0.3, pos.y - r * 0.3, r * 0.1, pos.x, pos.y, r);
-        grad.addColorStop(0, "#ff4040");
-        grad.addColorStop(0.4, "#bf0000");
-        grad.addColorStop(1, "#730000");
-
-        context.beginPath();
-        context.arc(pos.x, pos.y, r, 0, Math.PI * 2);
-        context.fillStyle = grad;
-        context.fill();
-
-        context.shadowColor = "transparent";
-        context.beginPath();
-        context.arc(pos.x, pos.y, r * 0.55, 0, Math.PI * 2);
-        context.strokeStyle = "rgba(255, 215, 0, 0.6)";
-        context.lineWidth = 1.2;
-        context.stroke();
-
-        context.beginPath();
-        context.arc(pos.x, pos.y, r * 0.25, 0, Math.PI * 2);
-        context.fillStyle = "#ffd700";
-        context.fill();
-
-    } else if (body.label === "striker") {
-        let grad = context.createRadialGradient(pos.x - r * 0.3, pos.y - r * 0.3, r * 0.1, pos.x, pos.y, r);
-        grad.addColorStop(0, "#ffd8a8");
-        grad.addColorStop(0.35, "#ff922b");
-        grad.addColorStop(0.85, "#e8590c");
-        grad.addColorStop(1, "#7f2704");
-        context.beginPath();
-        context.arc(pos.x, pos.y, r, 0, Math.PI * 2);
-        context.fillStyle = grad;
-        context.fill();
-
-        context.shadowColor = "transparent";
-        context.beginPath();
-        context.arc(pos.x, pos.y, r * 0.7, 0, Math.PI * 2);
-        context.strokeStyle = "rgba(255, 215, 0, 0.5)";
-        context.lineWidth = 1.3;
-        context.stroke();
-
-        context.beginPath();
-        context.arc(pos.x, pos.y, r * 0.4, 0, Math.PI * 2);
-        context.strokeStyle = "rgba(255, 255, 255, 0.35)";
-        context.lineWidth = 1.0;
-        context.stroke();
-
-        context.beginPath();
-        context.arc(pos.x, pos.y, r * 0.18, 0, Math.PI * 2);
-        context.fillStyle = "#ffd700";
-        context.fill();
-
-        context.beginPath();
-        context.ellipse(pos.x - r * 0.28, pos.y - r * 0.28, r * 0.38, r * 0.18, -Math.PI / 4, 0, Math.PI * 2);
-        let glossGrad = context.createLinearGradient(pos.x - r * 0.5, pos.y - r * 0.5, pos.x, pos.y);
-        glossGrad.addColorStop(0, "rgba(255, 255, 255, 0.55)");
-        glossGrad.addColorStop(1, "rgba(255, 255, 255, 0.0)");
-        context.fillStyle = glossGrad;
-        context.fill();
+        r *= GAME_CONFIG.queen.visualScale;
+    } else {
+        r *= GAME_CONFIG.coin.visualScale;
     }
-    context.restore();
+    let img = null;
+
+    if (body.label === "white") img = whiteTokenImg;
+    else if (body.label === "black") img = blackTokenImg;
+    else if (body.label === "queen") img = redTokenImg;
+    else if (body.label === "striker") img = strikerImg;
+
+    if (img && img.complete) {
+        context.save();
+        context.globalAlpha = body.render.opacity !== undefined ? body.render.opacity : 1.0;
+
+        context.shadowColor = "rgba(0, 0, 0, 0.4)";
+        context.shadowBlur = 4;
+        context.shadowOffsetX = 2;
+        context.shadowOffsetY = 2;
+
+        context.translate(pos.x, pos.y);
+        context.rotate(body.angle);
+
+        // Draw the image centered
+        context.drawImage(img, -r, -r, r * 2, r * 2);
+
+        context.restore();
+    }
 }
 
 Matter.Events.on(render, 'afterRender', () => {
@@ -790,10 +460,10 @@ Matter.Events.on(render, 'afterRender', () => {
         const solidEndY = player.position.y + dirY * currentDragDistance;
         let t = Infinity;
 
-        if (dirX > 0) t = Math.min(t, (290 - player.position.x) / dirX);
-        if (dirX < 0) t = Math.min(t, (10 - player.position.x) / dirX);
-        if (dirY > 0) t = Math.min(t, (290 - player.position.y) / dirY);
-        if (dirY < 0) t = Math.min(t, (10 - player.position.y) / dirY);
+        if (dirX > 0) t = Math.min(t, (565 - player.position.x) / dirX);
+        if (dirX < 0) t = Math.min(t, (35 - player.position.x) / dirX);
+        if (dirY > 0) t = Math.min(t, (565 - player.position.y) / dirY);
+        if (dirY < 0) t = Math.min(t, (35 - player.position.y) / dirY);
 
         hitX += dirX * t;
         hitY += dirY * t;
@@ -822,7 +492,7 @@ Matter.Events.on(render, 'afterRender', () => {
             const dy = body.position.y - closestY;
             const distSq = dx * dx + dy * dy;
 
-            const safeDistance = 17;
+            const safeDistance = 16;
             const safeDistanceSq = safeDistance * safeDistance;
 
             if (distSq <= safeDistanceSq && projection < firstCoinDistance) {
@@ -852,15 +522,19 @@ Matter.Events.on(render, 'afterRender', () => {
         context.stroke();
         context.restore();
 
-        const startWidth = 3;
-        const endWidth = 3;
+        const startWidth = 4 + (power * 1.5); // Thinner base
+        const endWidth = 1.0;                 // Sleeker tip transition
 
         const dx = solidEndX - player.position.x;
         const dy = solidEndY - player.position.y;
         const len = Math.hypot(dx, dy);
 
-        const nx = -dy / len;
-        const ny = dx / len;
+        let nx = 0;
+        let ny = 0;
+        if (len > 0) {
+            nx = -dy / len;
+            ny = dx / len;
+        }
 
         const p1 = {
             x: player.position.x + nx * startWidth,
@@ -879,58 +553,9 @@ Matter.Events.on(render, 'afterRender', () => {
             y: player.position.y - ny * startWidth
         };
 
-        const gradient = context.createLinearGradient(
-            player.position.x,
-            player.position.y,
-            solidEndX,
-            solidEndY
-        );
-
-        gradient.addColorStop(0, "#FFE600");
-        gradient.addColorStop(0.6, "#FF9900");
-        gradient.addColorStop(1, "#FF0000");
-
-        context.beginPath();
-        context.moveTo(p1.x, p1.y);
-        context.lineTo(p2.x, p2.y);
-        context.lineTo(p3.x, p3.y);
-        context.lineTo(p4.x, p4.y);
-        context.closePath();
-
-        context.fillStyle = gradient;
-        context.fill();
-
-        context.save();
-        context.beginPath();
-        context.moveTo(p1.x, p1.y);
-        context.lineTo(p2.x, p2.y);
-        context.lineTo(p3.x, p3.y);
-        context.lineTo(p4.x, p4.y);
-        context.closePath();
-        context.clip();
-
-        context.translate(player.position.x, player.position.y);
-        context.rotate(Math.atan2(dy, dx));
-
-        const glow = context.createLinearGradient(
-            shinePos - 40,
-            0,
-            shinePos + 40,
-            0
-        );
-
-        glow.addColorStop(0.0, "rgba(255,255,255,0)");
-        glow.addColorStop(0.4, "rgba(255,255,255,0.2)");
-        glow.addColorStop(0.5, "rgba(255,255,255,1)");
-        glow.addColorStop(0.6, "rgba(255,255,255,0.2)");
-        glow.addColorStop(1.0, "rgba(255,255,255,0)");
-
-        context.fillStyle = glow;
-        context.fillRect(-50, -15, len + 100, 30);
-        context.restore();
-
-        const arrowLength = 3;
-        const arrowWidth = 2;
+        // Arrow Tip dimensions (sleeker, matching user request)
+        const arrowLength = 11 + (power * 4);
+        const arrowWidth = 7 + (power * 2.5);
 
         const tip = {
             x: solidEndX + (dx / len) * arrowLength,
@@ -945,32 +570,70 @@ Matter.Events.on(render, 'afterRender', () => {
             y: solidEndY - ny * arrowWidth
         };
 
+        const gradient = context.createLinearGradient(
+            player.position.x, player.position.y,
+            tip.x, tip.y
+        );
+        gradient.addColorStop(0.0, "#ffffff");
+        gradient.addColorStop(0.3, "#ffea00");
+        gradient.addColorStop(0.7, "#ff6d00");
+        gradient.addColorStop(1.0, "#e52b00");
+
+        // Unified Arrow Path (Shaft + Tip combined to prevent dividing line)
         context.beginPath();
-        context.moveTo(tip.x, tip.y);
+        context.moveTo(p1.x, p1.y);
+        context.lineTo(p2.x, p2.y);
         context.lineTo(left.x, left.y);
+        context.lineTo(tip.x, tip.y);
         context.lineTo(right.x, right.y);
+        context.lineTo(p3.x, p3.y);
+        context.lineTo(p4.x, p4.y);
         context.closePath();
 
-        context.fillStyle = "#FF0000";
+        context.fillStyle = gradient;
+        context.shadowColor = "rgba(255, 109, 0, 0.4)";
+        context.shadowBlur = 6;
         context.fill();
 
-        if (power < 0.5) {
-            gradient.addColorStop(0, "#FFFF00");
-            gradient.addColorStop(1, "#FFFF00");
-        } else if (power < 0.9) {
-            gradient.addColorStop(0, "#FFFF00");
-            gradient.addColorStop(1, "#FF8C00");
-        } else {
-            gradient.addColorStop(0.0, "#FFFF00");
-            gradient.addColorStop(0.2, "#FF8C00");
-            gradient.addColorStop(1.0, "#FF0000");
-        }
-
-        context.strokeStyle = gradient;
-        context.lineWidth = 6;
-        context.setLineDash([]);
+        context.lineWidth = 1.5;
+        context.strokeStyle = "#ffffff";
+        context.shadowBlur = 0;
         context.stroke();
 
+        // Animated Chevrons inside the shaft
+        context.save();
+        context.beginPath();
+        context.moveTo(p1.x, p1.y);
+        context.lineTo(p2.x, p2.y);
+        context.lineTo(p3.x, p3.y);
+        context.lineTo(p4.x, p4.y);
+        context.closePath();
+        context.clip();
+
+        context.translate(player.position.x, player.position.y);
+        if (len > 0) {
+            context.rotate(Math.atan2(dy, dx));
+        }
+
+        const time = Date.now();
+        const speed = 0.05 + (power * 0.2); // Faster if more power
+        const offset = (time * speed) % 20;
+
+        context.strokeStyle = "rgba(255, 255, 255, 0.6)";
+        context.lineWidth = 1.2;
+        context.lineCap = "round";
+        context.lineJoin = "round";
+
+        for (let x = offset; x < len; x += 20) {
+            context.beginPath();
+            context.moveTo(x - 6, -startWidth);
+            context.lineTo(x, 0);
+            context.lineTo(x - 6, startWidth);
+            context.stroke();
+        }
+        context.restore();
+
+        // Thin, clean white dashed line projecting forward
         context.beginPath();
         context.moveTo(solidEndX, solidEndY);
 
@@ -980,9 +643,9 @@ Matter.Events.on(render, 'afterRender', () => {
             context.lineTo(hitX, hitY);
         }
 
-        context.setLineDash([8, 8]);
-        context.strokeStyle = "#ffffffff";
-        context.lineWidth = 3;
+        context.setLineDash([6, 6]);
+        context.strokeStyle = "rgba(255, 255, 255, 0.85)";
+        context.lineWidth = 2;
         context.stroke();
         context.setLineDash([]);
 
@@ -1120,18 +783,19 @@ let foul = false;
 let player1Score = 0;
 let player2Score = 0;
 let earnedExtraTurn = false;
-let startX = 65;
-let startY = 260;
+let startX = 130;
+let startY = 492;
 let queenStatus = "board";
 let queenPocketedBy = null;
 let pocketedInCurrentShot = [];
 
 Matter.Events.on(engine, 'afterUpdate', () => {
     const pockets = [
-        { x: 18, y: 18 }, { x: 18, y: 282 },
-        { x: 282, y: 18 }, { x: 282, y: 282 }
+        { x: 56, y: 56 }, { x: 56, y: 544 },
+        { x: 544, y: 56 }, { x: 544, y: 544 }
     ];
-    const pocketRadius = 15;
+    const coinPocketRadius = 20;    // Coins fall in at 20px from pocket center
+    const strikerPocketRadius = 6; // Striker needs to go EXTREMELY deep to fall in (almost dead center)
     const allBodies = Composite.allBodies(engine.world);
 
     allBodies.forEach(body => {
@@ -1140,30 +804,28 @@ Matter.Events.on(engine, 'afterUpdate', () => {
                 const dx = body.position.x - pocket.x;
                 const dy = body.position.y - pocket.y;
                 const distSq = dx * dx + dy * dy;
-                const radiusSq = pocketRadius * pocketRadius;
+                const effectiveRadius = (body.label === 'striker') ? strikerPocketRadius : coinPocketRadius;
+                const radiusSq = effectiveRadius * effectiveRadius;
                 if (distSq < radiusSq) {
+                    if (body.isPocketed) {
+                        break;
+                    }
+
+                    body.isPocketed = true;
+                    body.pocketStartFrame = 0;
+                    body.targetPocket = { x: pocket.x, y: pocket.y };
+                    body.collisionFilter.mask = 0;
+                    body.render.opacity = 1.0;
+
                     if (body.label === 'striker') {
                         foul = true;
                         if (!pocketedInCurrentShot.includes("striker")) {
                             pocketedInCurrentShot.push("striker");
                         }
-                        spawnPocketParticles(pocket.x, pocket.y, body.label);
-                        Matter.Body.setVelocity(body, { x: 0, y: 0 });
-                        Matter.Body.setAngularVelocity(body, 0);
-                        Matter.Body.setPosition(body, { x: startX, y: startY });
                     } else {
-                        if (body.isPocketed) {
-                            break;
-                        }
-                        body.isPocketed = true;
-                        body.pocketStartFrame = 0;
-                        body.targetPocket = { x: pocket.x, y: pocket.y };
-                        body.collisionFilter.mask = 0;
-                        body.render.opacity = 1.0;
-
                         pocketedInCurrentShot.push(body.label);
-                        spawnPocketParticles(pocket.x, pocket.y, body.label);
                     }
+                    spawnPocketParticles(pocket.x, pocket.y, body.label);
                     break;
                 }
             }
@@ -1171,7 +833,7 @@ Matter.Events.on(engine, 'afterUpdate', () => {
     });
 
     allBodies.forEach(body => {
-        if (body.isPocketed && body.label !== 'striker') {
+        if (body.isPocketed) {
             body.pocketStartFrame = (body.pocketStartFrame || 0) + 1;
 
             let target = body.targetPocket;
@@ -1182,12 +844,24 @@ Matter.Events.on(engine, 'afterUpdate', () => {
             }
 
             if (body.pocketStartFrame > 20) {
-                Matter.Body.scale(body, 0.9, 0.9);
+                if (body.label !== 'striker') {
+                    Matter.Body.scale(body, 0.9, 0.9);
+                }
                 body.render.opacity = Math.max(0, body.render.opacity - 0.04);
             }
 
             if (body.render.opacity <= 0 || body.pocketStartFrame >= 70) {
-                Composite.remove(engine.world, body);
+                if (body.label === 'striker') {
+                    // Reset the striker after animation finishes!
+                    body.isPocketed = false;
+                    body.render.opacity = 1.0;
+                    body.collisionFilter.mask = 1;
+                    Matter.Body.setVelocity(body, { x: 0, y: 0 });
+                    Matter.Body.setAngularVelocity(body, 0);
+                    Matter.Body.setPosition(body, { x: startX, y: startY });
+                } else {
+                    Composite.remove(engine.world, body);
+                }
             }
         }
     });
@@ -1196,7 +870,11 @@ Matter.Events.on(engine, 'afterUpdate', () => {
         body => body.isPocketed || body.speed < 0.009
     );
 
-    if (isInMotion && allStopped && !isAiming) {
+    const anyAnimating = allBodies.some(
+        body => body.isPocketed && body.render.opacity > 0
+    );
+
+    if (isInMotion && allStopped && !anyAnimating && !isAiming) {
         Matter.Body.setVelocity(player, { x: 0, y: 0 });
         Matter.Body.setAngularVelocity(player, 0);
 
@@ -1304,10 +982,10 @@ Matter.Events.on(engine, 'afterUpdate', () => {
         if (!earnedExtraTurn) {
             if (currentPlayer === 1) {
                 currentPlayer = 2;
-                startY = 40;
+                startY = 108;
             } else {
                 currentPlayer = 1;
-                startY = 260;
+                startY = 492;
             }
         }
 
@@ -1317,21 +995,27 @@ Matter.Events.on(engine, 'afterUpdate', () => {
         syncObjectOnX(85);
         updateTurnIndicator();
 
-        if (queenStatus === "covered") {
-            if (player1Score === 9) {
-                showMessage("YOU WIN!");
-            } else if (player2Score === 9) {
-                showMessage("YOU LOSE!");
+        if (player1Score >= 9) {
+            if (queenStatus === "covered") {
+                showWinScreen(true, window.currentOpponentName || "Opponent");
+            } else {
+                showWinScreen(false, window.currentOpponentName || "Opponent"); // Player 1 loses for sinking all coins before the queen
+            }
+        } else if (player2Score >= 9) {
+            if (queenStatus === "covered") {
+                showWinScreen(false, window.currentOpponentName || "Opponent"); // Player 2 wins, so Player 1 loses
+            } else {
+                showWinScreen(true, window.currentOpponentName || "Opponent"); // Player 2 loses for sinking all coins before the queen
             }
         }
     }
 
     function returnCoinToBoard(label) {
-        let basePosition = { x: 150, y: 150 };
+        let basePosition = { x: 300, y: 300 };
 
         let newX = basePosition.x;
         let newY = basePosition.y;
-        let radius = 7;
+        let radius = 15;
         let maxTries = 50;
         let angleStep = 0.5;
         let distStep = 2;
@@ -1363,7 +1047,7 @@ Matter.Events.on(engine, 'afterUpdate', () => {
         }
         let newCoin;
         if (label === "white") {
-            newCoin = Bodies.circle(newX, newY, 7, {
+            newCoin = Bodies.circle(newX, newY, GAME_CONFIG.coin.radius, {
                 label: 'white',
                 inertia: GAME_CONFIG.coin.inertia,
                 restitution: GAME_CONFIG.coin.restitution,
@@ -1378,7 +1062,7 @@ Matter.Events.on(engine, 'afterUpdate', () => {
                 }
             });
         } else if (label === "black") {
-            newCoin = Bodies.circle(newX, newY, 7, {
+            newCoin = Bodies.circle(newX, newY, GAME_CONFIG.coin.radius, {
                 label: 'black',
                 inertia: GAME_CONFIG.coin.inertia,
                 restitution: GAME_CONFIG.coin.restitution,
@@ -1393,7 +1077,7 @@ Matter.Events.on(engine, 'afterUpdate', () => {
                 }
             });
         } else if (label === "queen") {
-            newCoin = Bodies.circle(newX, newY, 7, {
+            newCoin = Bodies.circle(newX, newY, GAME_CONFIG.queen.radius, {
                 label: 'queen',
                 inertia: GAME_CONFIG.queen.inertia,
                 frictionAir: GAME_CONFIG.queen.frictionAir,
@@ -1425,7 +1109,7 @@ function syncObjectOnX(newX) {
         knob.style.left = `${newX}px`;
     }
 
-    startX = newX + 65;
+    startX = 152 + (newX / 170) * 296;
 
     let tempX = startX;
     const allBodies = Composite.allBodies(engine.world);
@@ -1442,8 +1126,17 @@ function syncObjectOnX(newX) {
                 const dx = body.position.x - tempX;
                 const dy = body.position.y - startY;
 
-                if (dx * dx + dy * dy < 324) {
+                if (dx * dx + dy * dy < 1089) {
                     blocked = true;
+                    if (Math.abs(body.position.x - 152) < 10) {
+                        tempX = body.position.x + 33;
+                    } else {
+                        let prevX = tempX;
+                        tempX = body.position.x + 33;
+                        if (Math.abs(tempX - prevX) < 10) {
+                            tempX += 20;
+                        }
+                    }
                 }
             }
         });
@@ -1476,7 +1169,6 @@ window.addEventListener('mousemove', (event) => {
     syncObjectOnX(mouseX);
 });
 
-// Added Touch Slider event for phones
 if (knobElement) {
     knobElement.addEventListener('touchstart', (e) => {
         isDragging = true;
@@ -1520,14 +1212,7 @@ Render.run(render);
 drawBoard();
 
 Composite.allBodies(engine.world).forEach(body => {
-    if (
-        body.label === "white" ||
-        body.label === "black" ||
-        body.label === "queen" ||
-        body.label === "striker"
-    ) {
-        body.render.visible = false;
-    }
+    body.render.visible = false;
 });
 
 updateTurnIndicator();

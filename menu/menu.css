@@ -1,0 +1,331 @@
+#menu-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #170d08;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 900;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease-in-out;
+}
+
+.menu-wrapper {
+    position: relative;
+    aspect-ratio: 941 / 1672;
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
+    container-type: inline-size;
+    background-image: url('../Assets/menu/BG_.png');
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+
+@media (min-aspect-ratio: 941/1672) {
+    .menu-wrapper {
+        height: 100%;
+        width: auto;
+    }
+}
+
+@media (max-aspect-ratio: 941/1672) {
+    .menu-wrapper {
+        width: 100%;
+        height: auto;
+    }
+}
+
+/* Floating Game Logo */
+.menu-logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 14%;
+    width: 82%;
+    aspect-ratio: 871 / 502;
+    object-fit: contain;
+    z-index: 5;
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.5));
+}
+
+/* Top Navigation Bar Mask (Upper-Bar.png) */
+.menu-top-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 7.536%;
+    /* 126px / 1672px */
+    background-image: url('../Assets/menu/Upper-Bar.png');
+    background-size: 100% 100%;
+    z-index: 10;
+}
+
+/* User Name Overlay (Top-Left, inside Upper-Bar) */
+.user-name-container {
+    position: absolute;
+    top: 15.87%;
+    /* Center vertically: (126 - 86) / 2 / 126 */
+    left: 2.869%;
+    /* 27px / 941px */
+    width: 23.91%;
+    /* 225px / 941px */
+    height: 68.25%;
+    /* 86px / 126px */
+    background-image: url('../Assets/menu/User-Name.png');
+    background-size: 100% 100%;
+    z-index: 11;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.user-name-container:hover {
+    transform: scale(1.02);
+    filter: brightness(1.05);
+}
+
+.user-name-content {
+    position: absolute;
+    left: 36%;
+    right: 5%;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 59%;
+    height: 60%;
+}
+
+.player-name-text {
+    color: #ffffff;
+    /* Clear white text */
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    font-size: 3.5cqw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 75%;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.player-name-input {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    font-size: 3.5cqw;
+    width: 75%;
+    outline: none;
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.8);
+    padding: 0;
+    margin: 0;
+}
+
+.edit-name-icon {
+    width: 3.5cqw;
+    height: 3.5cqw;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.edit-name-icon:hover {
+    transform: scale(1.2);
+}
+
+/* Coins Overlay (Top-Right, inside Upper-Bar) */
+.menu-coins-container {
+    position: absolute;
+    top: 20.24%;
+    /* Center vertically: (126 - 75) / 2 / 126 */
+    right: 4.144%;
+    /* 39px / 941px */
+    width: 21.68%;
+    /* 204px / 941px */
+    height: 59.52%;
+    /* 75px / 126px */
+    background-image: url('../Assets/menu/Coins-Bar.png');
+    background-size: 100% 100%;
+    z-index: 11;
+}
+
+.menu-coins-text {
+    position: absolute;
+    left: 35%;
+    right: 8%;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ffffff;
+    /* Clear white text */
+    font-family: 'Impact', 'Arial Black', sans-serif;
+    /* font-weight: bold; */
+    font-size: 3cqw;
+    text-align: center;
+    text-shadow: 0 1.5px 3px rgba(0, 0, 0, 0.8);
+    letter-spacing: 0.5px;
+}
+
+/* Interactive Center-Bottom Buttons */
+.menu-btn {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 47.6%;
+    aspect-ratio: 448 / 131;
+    background-image: url('../Assets/menu/Yellow-Button.png');
+    background-size: 100% 100%;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 4%;
+    z-index: 10;
+    transition: transform 0.1s ease, filter 0.2s ease;
+}
+
+.menu-btn:hover {
+    filter: brightness(1.1);
+    transform: translateX(-50%) scale(1.02);
+}
+
+.menu-btn:active {
+    transform: translateX(-50%) scale(0.96);
+}
+
+.multiplayer-btn {
+    top: 55.32%;
+}
+
+.local-btn {
+    top: 65.67%;
+}
+
+.btn-icon {
+    height: 65%;
+    width: auto;
+    object-fit: contain;
+    margin-right: 5%;
+}
+
+.btn-text {
+    color: #772b02;
+    font-family: 'Impact', 'Arial Black', sans-serif;
+    font-weight: 50;
+    font-size: 5cqw;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 0 rgba(255, 95, 37, 0.4);
+}
+
+/* Free Coins Interactive Overlay */
+.free-coins-overlay-btn {
+    position: absolute;
+    left: 1.5%;
+    top: 6.0%;
+    width: 17%;
+    aspect-ratio: 1 / 1;
+    cursor: pointer;
+    z-index: 10;
+    border-radius: 50%;
+}
+
+.free-coins-overlay-btn:hover {
+    animation: coinBounce 0.6s infinite alternate;
+}
+
+@keyframes coinBounce {
+    0% {
+        transform: translateY(0);
+    }
+
+    100% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Floating Reward Text Animation */
+.floating-coins-reward {
+    position: absolute;
+    color: #ffd700;
+    font-family: 'Impact', 'Arial Black', sans-serif;
+    font-size: 6cqw;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.9), 0 2px 4px black;
+    pointer-events: none;
+    z-index: 99;
+    animation: floatUp 1.2s forwards ease-out;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-50%, -80px);
+        opacity: 0;
+    }
+}
+
+/* Matchmaking Overlay Screen */
+.matchmaking-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(23, 13, 8, 0.95);
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+.matchmaking-radar {
+    width: 25cqw;
+    height: 25cqw;
+    border: 4px solid #ff922b;
+    border-radius: 50%;
+    position: relative;
+    animation: radarPulse 1.5s infinite ease-out;
+    margin-bottom: 20px;
+}
+
+@keyframes radarPulse {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(1.3);
+        opacity: 0;
+    }
+}
+
+.matchmaking-text {
+    color: #ffffff;
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    font-size: 4.5cqw;
+    letter-spacing: 1px;
+    text-align: center;
+    margin-top: 15px;
+    text-shadow: 0 2px 4px black;
+}

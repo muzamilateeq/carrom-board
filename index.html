@@ -5,6 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="loading/loading.css">
+    <link rel="stylesheet" href="menu/menu.css">
+    <link rel="stylesheet" href="board-selection/board-selection.css">
+    <link rel="stylesheet" href="searching-player/searching-player.css">
     <style>
         canvas {
             touch-action: none;
@@ -28,37 +35,37 @@
         #game-background {
             width: 500px;
             height: 100vh;
-            background-image: url("./red-background-pic.avif");
+            background-image: url("./Assets/menu/BG_.png");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
+            overflow: hidden;
         }
 
         #game-container {
-            width: 300px;
-            height: 300px;
+            width: 340px;
+            height: 340px;
             position: relative;
-            border-radius: 4px;
-            overflow: visible;
-            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.6), 0 10px 25px rgba(0, 0, 0, 0.5);
-            background:
-                radial-gradient(circle at center, rgba(254, 231, 197, 0.2) 0%, rgba(130, 81, 46, 0.3) 100%),
-                repeating-linear-gradient(90deg, rgba(145, 103, 69, 0.05) 0px, rgba(145, 103, 69, 0.05) 1px, transparent 1px, transparent 12px),
-                repeating-linear-gradient(0deg, rgba(110, 69, 38, 0.04) 0px, rgba(110, 69, 38, 0.04) 2px, transparent 2px, transparent 8px),
-                linear-gradient(to bottom, #e8c7a1 0%, #ca9e74 100%);
+            overflow: hidden;
+            border-radius: 6.5%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); /* Optional: add a nice shadow to the whole board */
         }
 
         #game-container canvas {
             position: absolute;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 6.5%;
         }
 
         #outside-container {
-            width: 190px;
+            width: 215px;
             height: 20px;
             background-color: #2a2c1c;
             border-radius: 50px;
@@ -88,9 +95,16 @@
         }
 
         #game-wrapper {
-            width: 300px;
+            width: 340px;
             transform-origin: center center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s ease-in-out;
         }
+
+
+
+
 
         /* Scoreboard Layout Fixes */
         #score-board {
@@ -174,15 +188,47 @@
             border: 2px solid #666;
         }
 
-        /* Mobile specific styles to show only red background */
+        /* Mobile specific styles to show same background as laptop */
         @media (max-width: 768px) {
             body {
-                background-image: url("./red-background-pic.avif");
+                background-image: url("./—Pngtree—dark blue galaxy starry background_321659.png");
             }
 
             #game-background {
                 width: 100%;
-                background-image: none;
+                background-image: url("./Assets/menu/BG_.png");
+            }
+        }
+
+        .win-screen-wrapper {
+            position: relative;
+            aspect-ratio: 941 / 1672;
+            max-width: 100%;
+            max-height: 100%;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            box-sizing: border-box;
+            background: url('Assets/menu/BG_.png') center/cover no-repeat;
+            overflow-y: auto;
+            overflow-x: hidden;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+        }
+
+        @media (min-aspect-ratio: 941/1672) {
+            .win-screen-wrapper {
+                height: 100% !important;
+                width: auto !important;
+            }
+        }
+
+        @media (max-aspect-ratio: 941/1672) {
+            .win-screen-wrapper {
+                width: 100% !important;
+                height: auto !important;
             }
         }
     </style>
@@ -192,6 +238,124 @@
 
 
     <div id="game-background">
+        <!-- Loading Screen Overlay -->
+        <div id="loading-screen">
+            <div class="loading-wrapper">
+                <img src="./Assets/loading/Mockup.png" class="loading-mockup" alt="Loading Background">
+                <!-- Mask to cover the mockup's static loading bar -->
+                <div class="loading-bar-mask"></div>
+                <div class="dynamic-loading-bar-container">
+                    <img src="./Assets/loading/Loading-Bar.png" class="loading-bar-bg" alt="Loading Bar Frame">
+                    <img src="./Assets/loading/Loading-Fill.png" id="loading-fill-img" class="loading-bar-fill"
+                        alt="Loading Progress">
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Menu Screen Overlay -->
+        <div id="menu-screen">
+            <div class="menu-wrapper">
+                <!-- Game Logo Title -->
+                <img src="./Assets/structure/Logo Title_.png" class="menu-logo" alt="Carrom Board Logo">
+
+                <!-- Top Navigation Bar Mask -->
+                <div id="menu-top-nav" class="menu-top-bar">
+                    <!-- Top-Left Player Profile Overlay -->
+                    <div class="user-name-container" id="menu-avatar-btn" title="Click to change profile picture">
+                        <div class="user-name-content">
+                            <span id="menu-player-name" class="player-name-text">Player 1</span>
+                            <input type="text" id="menu-player-input" class="player-name-input" style="display: none;"
+                                maxlength="10">
+                            <img src="./Assets/menu/Edit-Name.png" id="menu-edit-btn" class="edit-name-icon"
+                                alt="Edit Name">
+                        </div>
+                    </div>
+
+                    <!-- Top-Right Coins Bar Overlay -->
+                    <div class="menu-coins-container">
+                        <div id="menu-coins-value" class="menu-coins-text">159</div>
+                    </div>
+                </div>
+
+                <!-- Interactive Left Free Coins Claim Area -->
+                <div id="menu-free-coins" class="free-coins-overlay-btn" title="Claim Free Coins!"></div>
+
+                <!-- Center Bottom Play Options -->
+                <button id="menu-multiplayer-btn" class="menu-btn multiplayer-btn">
+                    <img src="./Assets/menu/Multiplayer.png" class="btn-icon" alt="Multiplayer icon">
+                    <span class="btn-text">MULTIPLAYER</span>
+                </button>
+
+                <button id="menu-local-btn" class="menu-btn local-btn">
+                    <img src="./Assets/menu/Local-Mode.png" class="btn-icon" alt="Local icon">
+                    <span class="btn-text">LOCAL</span>
+                </button>
+
+                <!-- Matchmaking Screen Overlay -->
+                <div id="matchmaking-screen" class="matchmaking-overlay">
+                    <div class="matchmaking-radar"></div>
+                    <div id="matchmaking-status" class="matchmaking-text">FINDING OPPONENT...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Board Selection Screen Overlay -->
+        <div id="board-selection-screen">
+            <div class="board-wrapper">
+
+                <div class="board-top-nav">
+                    <img src="./Assets/Board-slection/back-button.png" id="board-back-btn" class="board-back-btn"
+                        alt="Back Button">
+                    <div class="board-title">SELECT BOARD</div>
+                    <div class="board-coins-container">
+                        <div id="board-coins-value" class="board-coins-text">159</div>
+                    </div>
+                </div>
+
+                <div id="board-list-container" class="board-list">
+                    <!-- Javascript will populate the boards here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Searching Player Screen Overlay -->
+        <div id="searching-player-screen">
+            <div class="searching-player-wrapper">
+                <div class="sp-logo"></div>
+                <div id="sp-status-text" class="sp-status-text">SEARCHING FOR PLAYERS...</div>
+
+                <div class="sp-grid">
+                    <!-- Left Player Column -->
+                    <div class="sp-player-column">
+                        <div class="sp-avatar-container">
+                        </div>
+                        <div id="sp-player-name-left" class="sp-player-name">PLAYER 1</div>
+                        <div class="sp-fee-tab">
+                            <div id="sp-fee-left" class="sp-fee-text">200</div>
+                        </div>
+                    </div>
+
+                    <!-- VS Graphic -->
+                    <div class="sp-vs"></div>
+
+                    <!-- Right Player Column -->
+                    <div class="sp-player-column">
+                        <div id="sp-avatar-right" class="sp-avatar-container">
+                        </div>
+                        <div id="sp-player-name-right" class="sp-player-name">MATCHING...</div>
+                        <div class="sp-fee-tab">
+                            <div id="sp-fee-right" class="sp-fee-text">200</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="sp-cancel-btn" class="sp-cancel-btn">
+                    <span class="sp-cancel-text">CANCEL</span>
+                </button>
+            </div>
+        </div>
+
         <div id="game-wrapper">
 
             <div id="score-board">
@@ -235,21 +399,91 @@
                 <div id="slider-knob"></div>
             </div>
 
+        <!-- Win/Lose Screen Overlay -->
+        <div id="win-screen" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #3d1c0b 0%, #110703 100%); z-index: 1000; justify-content: center; align-items: center; box-sizing: border-box;">
+            <div class="win-screen-wrapper">
+                <!-- Title Banner (You Win / You Lose) -->
+                <img id="result-title-img" src="Assets/Result/Youu Win_.png" style="width: 110%; max-width: 520px; margin-top: 20px; animation: popIn 0.5s ease-out; object-fit: contain;">
+                
+                <!-- Players Row: Avatar + VS + Avatar -->
+                <div style="display: flex; flex-direction: row; align-items: flex-start; justify-content: center; width: 100%; margin-top: 15px; padding: 0 15px; box-sizing: border-box;">
+                    
+                    <!-- Player 1 Column -->
+                    <div style="display: flex; flex-direction: column; align-items: center; flex: 1;">
+                        <!-- Big Avatar Circle -->
+                        <div style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #7a8ab0; background: linear-gradient(145deg, #4a5a7a, #6a80b0); display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
+                            <img id="win-p1-img" src="you.png" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                        </div>
+                        <!-- Name Below Avatar -->
+                        <div id="win-p1-name" style="color: #e8c840; font-family: 'Anton', sans-serif; font-size: 13px; font-weight: bold; text-align: center; margin-top: 6px; text-shadow: 1px 1px 3px black; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px;">Guest07b52</div>
+                        <!-- ChatBox Bubble Below Name -->
+                        <div style="position: relative; width: 115px; margin-top: 5px;">
+                            <img src="Assets/Result/ChatBox.png" style="width: 100%; height: auto;">
+                            <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #5a4a2a; font-family: sans-serif; font-size: 10px; font-weight: bold; text-align: center; line-height: 1.2; width: 85%;">I want to play again!</span>
+                        </div>
+                    </div>
+                    
+                    <!-- VS Image (vertically centered with avatars) -->
+                    <div style="display: flex; align-items: center; justify-content: center; margin-top: 10px;">
+                        <img src="Assets/Result/VS.png" style="width: 60px; height: auto; object-fit: contain;">
+                    </div>
+                    
+                    <!-- Player 2 Column -->
+                    <div style="display: flex; flex-direction: column; align-items: center; flex: 1;">
+                        <!-- Big Avatar Circle -->
+                        <div style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #7a8ab0; background: linear-gradient(145deg, #4a5a7a, #6a80b0); display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
+                            <img id="win-p2-img" src="oponent-image.png" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                        </div>
+                        <!-- Name Below Avatar -->
+                        <div id="win-p2-name" style="color: #e8c840; font-family: 'Anton', sans-serif; font-size: 13px; font-weight: bold; text-align: center; margin-top: 6px; text-shadow: 1px 1px 3px black; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px;">Opponent</div>
+                        <!-- ChatBox Bubble Below Name -->
+                        <div style="position: relative; width: 115px; margin-top: 5px;">
+                            <img src="Assets/Result/ChatBox.png" style="width: 100%; height: auto;">
+                            <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #5a4a2a; font-family: sans-serif; font-size: 10px; font-weight: bold; text-align: center; line-height: 1.2; width: 85%;">I want to play again!</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coin Pile Image -->
+                <img src="Assets/Board-slection/Coin.png" style="width: 55px; height: auto; margin-top: 12px; object-fit: contain;">
+
+                <!-- Coins Amount in Dark Box -->
+                <div id="result-coins-amount" style="background: rgba(35, 25, 18, 0.9); border-radius: 10px; padding: 8px 45px; margin-top: 8px;">
+                    <span id="result-subtitle-text" style="color: white; font-family: 'Anton', sans-serif; font-size: 26px; font-weight: bold; letter-spacing: 2px; text-shadow: 1px 1px 3px black;">400</span>
+                </div>
+
+                <!-- REMATCH Button -->
+                <div id="win-play-btn" style="position: relative; width: 210px; margin-top: 14px; cursor: pointer; transition: transform 0.1s;">
+                    <img src="Assets/Result/Blue Button_.png" style="width: 100%; height: auto;">
+                    <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-family: 'Anton', sans-serif; font-weight: bold; font-size: 21px; text-shadow: 2px 2px 3px rgba(0,0,0,0.6); letter-spacing: 3px;">REMATCH</span>
+                </div>
+            </div>
+        </div>
+
         </div>
 
 
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
-        <script src="pieces.js"></script>
+        <script src="board-and-pieces/pieces-config.js"></script>
+        <script src="board-and-pieces/board.js"></script>
+        <script src="board-and-pieces/pieces.js"></script>
         <script src="game.js"></script>
+        <script src="board-selection/board-selection.js" defer></script>
+        <script src="searching-player/searching-player.js" defer></script>
+        <script src="menu/menu.js" defer></script>
+        <script src="result/result.js" defer></script>
+
+        <!-- Loading Screen Logic -->
+        <script src="loading/loading.js" defer></script>
 
 
 
         <script>
             function resizeGame() {
                 const wrapper = document.getElementById("game-wrapper");
-                // Cap the scale at 1.0 to prevent overflowing on desktop, and use 530 for height to account for full padding
-                const scale = Math.min(window.innerWidth / 340, window.innerHeight / 530, 1);
+                // Cap the scale at 1.0 to prevent overflowing on desktop, and use 580 for height to account for full padding
+                const scale = Math.min(window.innerWidth / 380, window.innerHeight / 580, 1);
                 wrapper.style.transform = `scale(${scale})`;
             }
             window.addEventListener("resize", resizeGame);
