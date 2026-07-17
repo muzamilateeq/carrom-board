@@ -198,6 +198,37 @@
                 width: 100%;
                 background-image: url("./Assets/menu/BG_.png");
             }
+
+            #game-wrapper {
+                width: 100% !important;
+                height: 100vh !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                transform: none !important;
+                padding: 15px 15px 30px 15px !important;
+                box-sizing: border-box !important;
+            }
+
+            #score-board {
+                width: 100% !important;
+                margin-bottom: 0 !important;
+                padding-top: 10px;
+            }
+
+            #game-container {
+                margin: auto 0 !important;
+                /* scale board container down slightly if screen is very narrow */
+                max-width: 92vw;
+                max-height: 92vw;
+            }
+
+            #outside-container {
+                margin: 0 auto !important;
+                width: 75% !important;
+                max-width: 250px;
+            }
         }
 
         .win-screen-wrapper {
