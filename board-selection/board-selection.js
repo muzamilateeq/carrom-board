@@ -17,7 +17,7 @@
 
     function updateBoardCoins() {
         if (coinsDisplay) {
-            const playerCoins = parseInt(localStorage.getItem('carrom_player_coins') || '133100', 10);
+            const playerCoins = parseInt(localStorage.getItem('carrom_player_coins') || '5000', 10);
             coinsDisplay.textContent = playerCoins;
         }
     }
@@ -57,7 +57,7 @@
             `;
 
             item.addEventListener('click', () => {
-                const playerCoins = parseInt(localStorage.getItem('carrom_player_coins') || '133100', 10);
+                const playerCoins = parseInt(localStorage.getItem('carrom_player_coins') || '5000', 10);
                 if (playerCoins >= board.fee) {
                     // Call the globally exposed matchmaking trigger
                     if (window.startMatchmaking) {

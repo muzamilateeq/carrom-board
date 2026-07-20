@@ -1,7 +1,8 @@
 (function () {
     // State management using localStorage
     let playerName = localStorage.getItem('carrom_player_name') || 'Player 1';
-    let playerCoins = parseInt(localStorage.getItem('carrom_player_coins') || '133100', 10);
+    let savedCoins = localStorage.getItem('carrom_player_coins');
+    let playerCoins = savedCoins !== null ? parseInt(savedCoins, 10) : 5000;
     localStorage.setItem('carrom_player_coins', playerCoins);
 
     const nameDisplay = document.getElementById('menu-player-name');
