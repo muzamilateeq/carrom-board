@@ -843,11 +843,8 @@ Matter.Events.on(engine, 'afterUpdate', () => {
                 Matter.Body.setVelocity(body, { x: dx * 0.15, y: dy * 0.15 });
             }
 
-            if (body.pocketStartFrame > 20) {
-                if (body.label !== 'striker') {
-                    Matter.Body.scale(body, 0.9, 0.9);
-                }
-                body.render.opacity = Math.max(0, body.render.opacity - 0.04);
+            if (body.pocketStartFrame > 10) {
+                body.render.opacity = Math.max(0, body.render.opacity - 0.05);
             }
 
             if (body.render.opacity <= 0 || body.pocketStartFrame >= 70) {
@@ -1243,14 +1240,21 @@ window.resetGameBoard = function() {
     if (typeof player !== 'undefined' && player) {
         player.isPocketed = false;
         player.render.opacity = 1;
+        player.collisionFilter.mask = 0xFFFFFFFF;
+        player.collisionFilter.category = 1;
         Matter.Body.setPosition(player, { x: 130, y: 492 });
         Matter.Body.setVelocity(player, { x: 0, y: 0 });
         Matter.Body.setAngularVelocity(player, 0);
+        if (!Composite.allBodies(engine.world).includes(player)) {
+            Composite.add(engine.world, player);
+        }
     }
 
     if (typeof target !== 'undefined' && target) {
         target.isPocketed = false;
         target.render.opacity = 1;
+        target.collisionFilter.mask = 0xFFFFFFFF;
+        target.collisionFilter.category = 1;
         Matter.Body.setPosition(target, { x: 300, y: 300 });
         Matter.Body.setVelocity(target, { x: 0, y: 0 });
         Matter.Body.setAngularVelocity(target, 0);
@@ -1265,6 +1269,8 @@ window.resetGameBoard = function() {
             if (layoutPos) {
                 c.isPocketed = false;
                 c.render.opacity = 1;
+                c.collisionFilter.mask = 0xFFFFFFFF;
+                c.collisionFilter.category = 1;
                 Matter.Body.setPosition(c, { x: layoutPos.x, y: layoutPos.y });
                 Matter.Body.setVelocity(c, { x: 0, y: 0 });
                 Matter.Body.setAngularVelocity(c, 0);
