@@ -97,6 +97,19 @@
         });
     }
 
+    const boardFreeCoinsBtn = document.getElementById('board-free-coins-btn');
+    if (boardFreeCoinsBtn) {
+        boardFreeCoinsBtn.addEventListener('click', () => {
+            if (typeof window.addCoins === 'function') {
+                window.addCoins(5000);
+            } else {
+                const current = parseInt(localStorage.getItem('carrom_player_coins') || '5000', 10);
+                localStorage.setItem('carrom_player_coins', current + 5000);
+            }
+            updateBoardCoins();
+        });
+    }
+
     // Expose a global function to be called from menu.js to fade in the board screen
     window.openBoardSelection = function() {
         updateBoardCoins();
