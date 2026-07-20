@@ -1047,56 +1047,55 @@ Matter.Events.on(engine, 'afterUpdate', () => {
             newY = basePosition.y + Math.sin(angle) * distance;
             currentTry++;
         }
-        let newCoin;
-        if (label === "white") {
-            newCoin = Bodies.circle(newX, newY, GAME_CONFIG.coin.radius, {
-                label: 'white',
-                inertia: GAME_CONFIG.coin.inertia,
-                restitution: GAME_CONFIG.coin.restitution,
-                friction: GAME_CONFIG.coin.friction,
-                frictionAir: GAME_CONFIG.coin.frictionAir,
-                frictionStatic: GAME_CONFIG.coin.frictionStatic,
-                density: GAME_CONFIG.coin.density,
-                slop: GAME_CONFIG.coin.slop,
-                plugin: { ccd: { toggled: true } },
-                render: {
-                    visible: false
-                }
-            });
-        } else if (label === "black") {
-            newCoin = Bodies.circle(newX, newY, GAME_CONFIG.coin.radius, {
-                label: 'black',
-                inertia: GAME_CONFIG.coin.inertia,
-                restitution: GAME_CONFIG.coin.restitution,
-                friction: GAME_CONFIG.coin.friction,
-                frictionAir: GAME_CONFIG.coin.frictionAir,
-                frictionStatic: GAME_CONFIG.coin.frictionStatic,
-                density: GAME_CONFIG.coin.density,
-                slop: GAME_CONFIG.coin.slop,
-                plugin: { ccd: { toggled: true } },
-                render: {
-                    visible: false
-                }
-            });
-        } else if (label === "queen") {
-            newCoin = Bodies.circle(newX, newY, GAME_CONFIG.queen.radius, {
-                label: 'queen',
-                inertia: GAME_CONFIG.queen.inertia,
-                frictionAir: GAME_CONFIG.queen.frictionAir,
-                friction: GAME_CONFIG.queen.friction,
-                frictionStatic: GAME_CONFIG.queen.frictionStatic,
-                restitution: GAME_CONFIG.queen.restitution,
-                density: GAME_CONFIG.queen.density,
-                slop: GAME_CONFIG.queen.slop,
-                plugin: { ccd: { toggled: true } },
-                render: {
-                    visible: false
-                }
-            });
+        // Reuse an existing pocketed coin if available
+        let coinToReturn = coins.find(c => c.label === label && c.isPocketed);
+        if (!coinToReturn && label === 'queen' && target && target.isPocketed) {
+            coinToReturn = target;
         }
 
-        if (newCoin) {
-            Composite.add(engine.world, newCoin);
+        if (coinToReturn) {
+            coinToReturn.isPocketed = false;
+            coinToReturn.render.opacity = 1.0;
+            coinToReturn.collisionFilter.mask = 0xFFFFFFFF;
+            coinToReturn.collisionFilter.category = 1;
+            Matter.Body.setPosition(coinToReturn, { x: newX, y: newY });
+            Matter.Body.setVelocity(coinToReturn, { x: 0, y: 0 });
+            Matter.Body.setAngularVelocity(coinToReturn, 0);
+            if (!Composite.allBodies(engine.world).includes(coinToReturn)) {
+                Composite.add(engine.world, coinToReturn);
+            }
+        } else {
+            let newCoin;
+            if (label === "white" || label === "black") {
+                newCoin = Bodies.circle(newX, newY, GAME_CONFIG.coin.radius, {
+                    label: label,
+                    inertia: GAME_CONFIG.coin.inertia,
+                    restitution: GAME_CONFIG.coin.restitution,
+                    friction: GAME_CONFIG.coin.friction,
+                    frictionAir: GAME_CONFIG.coin.frictionAir,
+                    frictionStatic: GAME_CONFIG.coin.frictionStatic,
+                    density: GAME_CONFIG.coin.density,
+                    slop: GAME_CONFIG.coin.slop,
+                    plugin: { ccd: { toggled: true } },
+                    render: { visible: false }
+                });
+            } else if (label === "queen") {
+                newCoin = Bodies.circle(newX, newY, GAME_CONFIG.queen.radius, {
+                    label: 'queen',
+                    inertia: GAME_CONFIG.queen.inertia,
+                    frictionAir: GAME_CONFIG.queen.frictionAir,
+                    friction: GAME_CONFIG.queen.friction,
+                    frictionStatic: GAME_CONFIG.queen.frictionStatic,
+                    restitution: GAME_CONFIG.queen.restitution,
+                    density: GAME_CONFIG.queen.density,
+                    slop: GAME_CONFIG.queen.slop,
+                    plugin: { ccd: { toggled: true } },
+                    render: { visible: false }
+                });
+            }
+            if (newCoin) {
+                Composite.add(engine.world, newCoin);
+            }
         }
     }
 });
@@ -1221,6 +1220,16 @@ updateTurnIndicator();
 syncObjectOnX(85);
 
 window.resetGameBoard = function() {
+    // Purge any dynamic extra bodies created during fouls/penalties
+    const currentWorldBodies = Composite.allBodies(engine.world);
+    currentWorldBodies.forEach(b => {
+        if (b !== player && b !== target && (!coins || !coins.includes(b))) {
+            if (b.label === 'white' || b.label === 'black' || b.label === 'queen' || b.label === 'striker') {
+                Composite.remove(engine.world, b);
+            }
+        }
+    });
+
     if (typeof player1Score !== 'undefined') player1Score = 0;
     if (typeof player2Score !== 'undefined') player2Score = 0;
     if (typeof currentPlayer !== 'undefined') currentPlayer = 1;
