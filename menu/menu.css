@@ -7,7 +7,7 @@
     background-color: #170d08;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     z-index: 900;
     opacity: 0;
     pointer-events: none;
@@ -30,6 +30,9 @@
 }
 
 @media (min-aspect-ratio: 941/1672) {
+    #menu-screen {
+        align-items: flex-start;
+    }
     .menu-wrapper {
         height: 100%;
         width: auto;
