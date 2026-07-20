@@ -2,17 +2,17 @@ const GAME_CONFIG = {
     restingThreshold: 0.001,
 
     wall: {
-        restitution: 0.8,
+        restitution: 0.88,
         minBounceSpeed: 0.3
     },
 
     striker: {
         radius: 17.4,         // Physical collision size
-        visualScale: 2,    // How much to scale the image (1.35 = 35% larger)
-        restitution: 0.7,
-        frictionAir: 0.03,
-        density: 0.0030,      // Heavier striker (approx 3x coin weight)
-        maxSpeed: 18,
+        visualScale: 2,       // How much to scale the image (1.35 = 35% larger)
+        restitution: 0.82,
+        frictionAir: 0.022,
+        density: 0.0035,      // Heavier striker (approx 3x coin weight)
+        maxSpeed: 22,
         slop: 0,
         inertia: Infinity,
         frictionStatic: 0,
@@ -23,9 +23,9 @@ const GAME_CONFIG = {
     coin: {
         radius: 15,           // Physical collision size
         visualScale: 1.50,    // How much to scale the image
-        restitution: 0.7,
-        frictionAir: 0.03,
-        density: 0.0013,
+        restitution: 0.82,
+        frictionAir: 0.022,
+        density: 0.0014,
         slop: 0,
         friction: 0,
         frictionStatic: 0,
@@ -36,9 +36,9 @@ const GAME_CONFIG = {
     queen: {
         radius: 15,           // Physical collision size
         visualScale: 1.50,    // How much to scale the image
-        restitution: 0.7,
-        frictionAir: 0.03,
-        density: 0.0013,
+        restitution: 0.82,
+        frictionAir: 0.022,
+        density: 0.0014,
         slop: 0,
         friction: 0,
         frictionStatic: 0,
