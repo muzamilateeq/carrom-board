@@ -29,11 +29,11 @@ function showWinScreen(isWinner, opponentName = "Opponent") {
     
     // Customize based on win or loss
     if (isWinner) {
+        let currentCoins = parseInt(localStorage.getItem('carrom_player_coins') || '5000', 10);
+        let newTotal = currentCoins + winAmount;
+        localStorage.setItem('carrom_player_coins', newTotal);
         if (typeof window.addCoins === 'function') {
-            window.addCoins(winAmount);
-        } else {
-            let currentCoins = parseInt(localStorage.getItem('carrom_player_coins') || '5000', 10);
-            localStorage.setItem('carrom_player_coins', currentCoins + winAmount);
+            window.addCoins(0); // syncs UI with newTotal in localStorage
         }
         titleImg.src = "Assets/Result/Youu Win_.png";
         if (subtitleText) subtitleText.textContent = `+${winAmount}`;

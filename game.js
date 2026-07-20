@@ -995,19 +995,11 @@ Matter.Events.on(engine, 'afterUpdate', () => {
         const triggerWin = window.showWinScreen || (typeof showWinScreen !== 'undefined' ? showWinScreen : null);
         if (player1Score >= 9) {
             if (triggerWin) {
-                if (queenStatus === "covered") {
-                    triggerWin(true, window.currentOpponentName || "Opponent");
-                } else {
-                    triggerWin(false, window.currentOpponentName || "Opponent");
-                }
+                triggerWin(true, window.currentOpponentName || "Opponent");
             }
         } else if (player2Score >= 9) {
             if (triggerWin) {
-                if (queenStatus === "covered") {
-                    triggerWin(false, window.currentOpponentName || "Opponent");
-                } else {
-                    triggerWin(true, window.currentOpponentName || "Opponent");
-                }
+                triggerWin(false, window.currentOpponentName || "Opponent");
             }
         }
     }
