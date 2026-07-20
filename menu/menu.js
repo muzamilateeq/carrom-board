@@ -38,20 +38,27 @@
     updateCoinsUI(playerCoins);
 
     // Global APIs for Matchmaking & Result screens
-    window.getPlayerCoins = () => playerCoins;
+    window.getPlayerCoins = () => {
+        const saved = localStorage.getItem('carrom_player_coins');
+        return saved !== null ? parseInt(saved, 10) : 5000;
+    };
     window.deductCoins = (amount) => {
-        if (playerCoins >= amount) {
-            playerCoins -= amount;
-            localStorage.setItem('carrom_player_coins', playerCoins);
-            updateCoinsUI(playerCoins);
+        let current = window.getPlayerCoins();
+        if (current >= amount) {
+            let updated = current - amount;
+            playerCoins = updated;
+            localStorage.setItem('carrom_player_coins', updated);
+            updateCoinsUI(updated);
             return true;
         }
         return false;
     };
     window.addCoins = (amount) => {
-        playerCoins += amount;
-        localStorage.setItem('carrom_player_coins', playerCoins);
-        updateCoinsUI(playerCoins);
+        let current = window.getPlayerCoins();
+        let updated = current + amount;
+        playerCoins = updated;
+        localStorage.setItem('carrom_player_coins', updated);
+        updateCoinsUI(updated);
     };
 
     // Inline Name Editing Logic

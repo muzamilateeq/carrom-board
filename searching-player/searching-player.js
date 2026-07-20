@@ -111,10 +111,14 @@
                     clearInterval(countdownInterval);
                     countdownInterval = null;
 
-                    // Deduct coins on launch
-                    const playerCoins = parseInt(localStorage.getItem('carrom_player_coins') || '5000', 10);
-                    const newBalance = Math.max(0, playerCoins - currentFee);
-                    localStorage.setItem('carrom_player_coins', newBalance);
+                    // Deduct coins on launch using global API
+                    if (typeof window.deductCoins === 'function') {
+                        window.deductCoins(currentFee);
+                    } else {
+                        const playerCoins = parseInt(localStorage.getItem('carrom_player_coins') || '5000', 10);
+                        const newBalance = Math.max(0, playerCoins - currentFee);
+                        localStorage.setItem('carrom_player_coins', newBalance);
+                    }
 
                     // Launch game
                     if (window.startLocalGameFromBoard) {
