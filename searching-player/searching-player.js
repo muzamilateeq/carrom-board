@@ -53,7 +53,7 @@
             playerNameLeft.textContent = localStorage.getItem('carrom_player_name') || 'PLAYER 1';
         }
         if (playerNameRight) {
-            playerNameRight.textContent = 'MATCHING...';
+            playerNameRight.textContent = fixedOpponentName ? fixedOpponentName.toUpperCase() : 'MATCHING...';
         }
         if (playerFeeLeft) {
             playerFeeLeft.textContent = entryFee;
@@ -62,7 +62,7 @@
             playerFeeRight.textContent = entryFee;
         }
         if (spStatusText) {
-            spStatusText.textContent = 'SEARCHING FOR PLAYERS...';
+            spStatusText.textContent = fixedOpponentName ? 'REMATCHING WITH OPPONENT...' : 'SEARCHING FOR PLAYERS...';
         }
         if (opponentAvatar) {
             opponentAvatar.classList.add('sp-pulse');
