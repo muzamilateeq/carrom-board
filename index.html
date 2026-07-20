@@ -48,13 +48,22 @@
             box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 768px), (max-aspect-ratio: 941/1672) {
+            html, body {
+                align-items: flex-start !important;
+                justify-content: flex-start !important;
+            }
             #game-background {
                 width: 100vw !important;
                 height: 100vh !important;
                 height: 100dvh !important;
                 aspect-ratio: auto !important;
                 box-shadow: none !important;
+                align-items: flex-start !important;
+            }
+            #menu-screen, #board-selection-screen, #searching-player-screen, #win-screen, #loading-screen {
+                align-items: flex-start !important;
+                top: 0 !important;
             }
         }
 
