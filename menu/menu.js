@@ -249,6 +249,9 @@
     // Expose game launcher for board selection
     window.startLocalGameFromBoard = function (opponentName) {
         window.currentOpponentName = opponentName || "Opponent";
+        if (typeof window.resetGameBoard === 'function') {
+            window.resetGameBoard();
+        }
         syncScoreboardWithPlayerState(opponentName);
         transitionToGameBoard();
     };

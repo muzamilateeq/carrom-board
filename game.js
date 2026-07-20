@@ -1223,4 +1223,60 @@ Composite.allBodies(engine.world).forEach(body => {
 updateTurnIndicator();
 syncObjectOnX(85);
 
+window.resetGameBoard = function() {
+    if (typeof player1Score !== 'undefined') player1Score = 0;
+    if (typeof player2Score !== 'undefined') player2Score = 0;
+    if (typeof currentPlayer !== 'undefined') currentPlayer = 1;
+    if (typeof startY !== 'undefined') startY = 492;
+    if (typeof queenStatus !== 'undefined') queenStatus = "uncovered";
+    if (typeof queenCoveredBy !== 'undefined') queenCoveredBy = null;
+    if (typeof foul !== 'undefined') foul = false;
+    if (typeof earnedExtraTurn !== 'undefined') earnedExtraTurn = false;
+    if (typeof isInMotion !== 'undefined') isInMotion = false;
+    if (typeof pocketedInCurrentShot !== 'undefined') pocketedInCurrentShot = [];
+
+    const p1ScoreEl = document.getElementById("p1score");
+    const p2ScoreEl = document.getElementById("p2score");
+    if (p1ScoreEl) p1ScoreEl.textContent = "0";
+    if (p2ScoreEl) p2ScoreEl.textContent = "0";
+
+    if (typeof player !== 'undefined' && player) {
+        player.isPocketed = false;
+        player.render.opacity = 1;
+        Matter.Body.setPosition(player, { x: 130, y: 492 });
+        Matter.Body.setVelocity(player, { x: 0, y: 0 });
+        Matter.Body.setAngularVelocity(player, 0);
+    }
+
+    if (typeof target !== 'undefined' && target) {
+        target.isPocketed = false;
+        target.render.opacity = 1;
+        Matter.Body.setPosition(target, { x: 300, y: 300 });
+        Matter.Body.setVelocity(target, { x: 0, y: 0 });
+        Matter.Body.setAngularVelocity(target, 0);
+        if (!Composite.allBodies(engine.world).includes(target)) {
+            Composite.add(engine.world, target);
+        }
+    }
+
+    if (typeof coins !== 'undefined' && Array.isArray(coins)) {
+        coins.forEach((c, idx) => {
+            const layoutPos = coinLayout[idx];
+            if (layoutPos) {
+                c.isPocketed = false;
+                c.render.opacity = 1;
+                Matter.Body.setPosition(c, { x: layoutPos.x, y: layoutPos.y });
+                Matter.Body.setVelocity(c, { x: 0, y: 0 });
+                Matter.Body.setAngularVelocity(c, 0);
+                if (!Composite.allBodies(engine.world).includes(c)) {
+                    Composite.add(engine.world, c);
+                }
+            }
+        });
+    }
+
+    syncObjectOnX(85);
+    updateTurnIndicator();
+};
+
 Runner.run(runner, engine);
