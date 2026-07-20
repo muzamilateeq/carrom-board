@@ -1211,7 +1211,7 @@ Composite.allBodies(engine.world).forEach(body => {
 updateTurnIndicator();
 syncObjectOnX(85);
 
-window.resetGameBoard = function() {
+window.resetGameBoard = function () {
     // Purge any dynamic extra bodies created during fouls/penalties
     const currentWorldBodies = Composite.allBodies(engine.world);
     currentWorldBodies.forEach(b => {
