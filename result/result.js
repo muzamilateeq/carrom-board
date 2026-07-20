@@ -29,14 +29,17 @@ function showWinScreen(isWinner, opponentName = "Opponent") {
     
     // Customize based on win or loss
     if (isWinner) {
+        let currentCoins = parseInt(localStorage.getItem('carrom_player_coins') || '5000', 10);
+        let updatedCoins = currentCoins + winAmount;
+        localStorage.setItem('carrom_player_coins', updatedCoins);
         if (typeof window.addCoins === 'function') {
             window.addCoins(winAmount);
         }
         titleImg.src = "Assets/Result/Youu Win_.png";
-        if (subtitleText) subtitleText.textContent = winAmount;
+        if (subtitleText) subtitleText.textContent = `+${winAmount}`;
     } else {
         titleImg.src = "Assets/Result/You Lose.png";
-        if (subtitleText) subtitleText.textContent = winAmount;
+        if (subtitleText) subtitleText.textContent = `-${entryFee}`;
     }
     
     winScreen.style.display = 'flex';
