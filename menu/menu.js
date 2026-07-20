@@ -92,6 +92,16 @@
 
     if (editBtn) editBtn.addEventListener('click', enableEditing);
     if (nameDisplay) nameDisplay.addEventListener('click', enableEditing);
+
+    if (freeCoinsBtn) {
+        freeCoinsBtn.addEventListener('click', () => {
+            const oldCoins = window.getPlayerCoins();
+            const reward = 5000;
+            window.addCoins(reward);
+            createFloatingReward(freeCoinsBtn, `+${reward} COINS!`);
+            animateCoinsTicker(oldCoins, oldCoins + reward);
+        });
+    }
     if (nameInput) {
         nameInput.addEventListener('blur', saveName);
         nameInput.addEventListener('keydown', (e) => {
