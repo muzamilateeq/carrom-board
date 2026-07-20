@@ -34,9 +34,12 @@
 }
 
 @media (max-aspect-ratio: 941/1672) {
+    #board-selection-screen {
+        align-items: flex-start;
+    }
     .board-wrapper {
         width: 100%;
-        height: auto;
+        height: 100%;
     }
 }
 
@@ -57,27 +60,29 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 7.5%;
+    height: 7.636%;
     z-index: 10;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 4%;
+
+    padding-left: 2%;
+    padding-right: 2.5%;
     box-sizing: border-box;
     background-image: url('../Assets/menu/Upper-Bar.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
-    border-bottom: none;
-    margin-top: 0;
-    /* Reset margin since the image takes up the top space */
 }
 
 .board-title {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     color: #ffffff;
-    font-family: 'Anton', 'Impact', 'Arial Black', sans-serif;
-    font-size: 5.8cqw;
-    /* Adjusted for Anton */
+    font-family: 'Anton', 'Impact', sans-serif;
+    font-size: 5.5cqw;
     font-weight: normal;
     text-transform: uppercase;
     text-shadow:
@@ -87,12 +92,12 @@
         1.5px 1.5px 0 #000,
         0px 3px 5px rgba(0, 0, 0, 0.8);
     letter-spacing: 1.5px;
-    margin-top: 3%;
-    /* push slightly down to balance border */
+    margin: 0;
+    pointer-events: none;
 }
 
 .board-back-btn {
-    height: 80%;
+    height: 65%;
     cursor: pointer;
     transition: transform 0.2s ease;
 }
@@ -102,7 +107,7 @@
 }
 
 .board-coins-container {
-    height: 80%;
+    height: 60%;
     aspect-ratio: 204 / 75;
     background-image: url('../Assets/Board-slection/Coins\ Bar_.png');
     background-size: 100% 100%;
@@ -114,10 +119,9 @@
 
 .board-coins-text {
     color: #ffffff;
-    font-family: 'Anton', 'Impact', 'Arial Black', sans-serif;
+    font-family: 'Anton', 'Impact', sans-serif;
     font-weight: normal;
-    font-size: 4.5cqw;
-    /* Adjusted for Anton */
+    font-size: 3.2cqw;
     text-align: center;
     text-shadow:
         -1px -1px 0 #000,
@@ -126,27 +130,23 @@
         1px 1px 0 #000,
         0px 2px 4px rgba(0, 0, 0, 0.8);
     letter-spacing: 0.5px;
-    margin-left: 10%;
-    /* offset for icon */
+    margin-left: 15%;
 }
 
 /* Board Options List */
 .board-list {
     position: absolute;
-    top: 10%;
-    /* Start right under the nav */
+    top: 7.536%;
     left: 0;
     width: 100%;
-    height: 90%;
+    height: 93.464%;
     z-index: 10;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
-    /* Perfectly space the 5 bars on screen */
     overflow: hidden;
-    /* ABSOLUTELY NO SCROLLING */
-    padding-bottom: 2%;
+    padding-bottom: 7%;
     box-sizing: border-box;
 }
 
@@ -157,23 +157,20 @@
     align-items: center;
     flex-shrink: 0;
     margin: 0;
-    /* Removed excessive margin */
 }
 
 .board-item-title {
     color: #ffffff;
-    font-family: 'Anton', 'Impact', 'Arial Black', sans-serif;
+    font-family: 'Anton', 'Impact', sans-serif;
     font-weight: normal;
-    font-size: 5cqw;
-    /* Adjusted for Anton */
+    font-size: 4.8cqw;
     text-shadow:
         -1.5px -1.5px 0 #000,
         1.5px -1.5px 0 #000,
         -1.5px 1.5px 0 #000,
         1.5px 1.5px 0 #000,
         0px 3px 5px rgba(0, 0, 0, 0.9);
-    margin-bottom: 0%;
-    /* Hug tightly to the ribbon */
+    margin-bottom: 0.5%;
     z-index: 5;
     text-transform: uppercase;
     letter-spacing: 1.5px;
@@ -181,7 +178,6 @@
 
 .board-item {
     width: 70.88%;
-    /* 667 / 941 */
     aspect-ratio: 667 / 175;
     background-size: 100% 100%;
     position: relative;
@@ -195,23 +191,18 @@
 
 .board-coin-large {
     position: absolute;
-    left: 1%;
-    /* Nicely aligned inside the left edge */
+    left: 2%;
     top: 50%;
     transform: translateY(-50%);
-    width: 14%;
-    /* Scaled down slightly */
-    height: 58%;
-    /* Scaled down slightly */
+    width: auto;
+    height: 62%;
     z-index: 2;
 }
 
 .board-prize-container {
     position: absolute;
-    left: 44%;
-    /* Mathematically balanced center */
+    left: 40%;
     top: 50%;
-    /* Perfectly centered on Y-axis */
     transform: translate(-50%, -50%);
     width: 39.43%;
     height: 65.71%;
@@ -233,7 +224,6 @@
     left: 0;
     width: 100%;
     height: 56.5%;
-    /* Restricts flex area to the dark slot below the ribbon */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -241,27 +231,23 @@
 
 .board-prize-text {
     color: #ffffff;
-    font-family: 'Anton', 'Impact', 'Arial Black', sans-serif;
+    font-family: 'Anton', 'Impact', sans-serif;
     font-weight: normal;
-    font-size: 5cqw;
-    /* Adjusted for Anton */
+    font-size: 4.8cqw;
     line-height: 1;
-    /* Fix vertical height alignment */
     text-shadow:
         -1.2px -1.2px 0 #000,
         1.2px -1.2px 0 #000,
         -1.2px 1.2px 0 #000,
         1.2px 1.2px 0 #000,
         0px 2px 4px rgba(0, 0, 0, 0.9);
-    letter-spacing: 1.5px;
+    letter-spacing: 1.2px;
 }
 
 .board-fee-container {
     position: absolute;
     right: 5%;
-    /* Pushed slightly left to match mockup */
     top: 50%;
-    /* Perfectly centered on Y-axis */
     transform: translateY(-50%);
     width: 21.29%;
     height: 53.14%;
@@ -283,7 +269,6 @@
     left: 0;
     width: 100%;
     height: 62.3%;
-    /* Restricts flex area to the dark slot below the label */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -291,22 +276,19 @@
 
 .board-fee-text {
     color: #ffffff;
-    font-family: 'Anton', 'Impact', 'Arial Black', sans-serif;
+    font-family: 'Anton', 'Impact', sans-serif;
     font-weight: normal;
-    font-size: 3.7cqw;
-    /* Slightly decreased to fit beautifully inside the box */
+    font-size: 3.5cqw;
     line-height: 1;
-    /* Fix vertical height alignment */
     text-shadow:
         -1px -1px 0 #000,
         1px -1px 0 #000,
         -1px 1px 0 #000,
         1px 1px 0 #000,
         0px 2px 4px rgba(0, 0, 0, 0.9);
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
 }
 
-/* Conditionally scale down 5-digit entry fees like 10000 so they stay inside the box boundaries */
 .board-fee-text.long-text {
-    font-size: 3cqw;
+    font-size: 2.8cqw;
 }

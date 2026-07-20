@@ -37,9 +37,12 @@
 }
 
 @media (max-aspect-ratio: 941/1672) {
+    #menu-screen {
+        align-items: flex-start;
+    }
     .menu-wrapper {
         width: 100%;
-        height: auto;
+        height: 100%;
     }
 }
 
@@ -48,8 +51,8 @@
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    top: 14%;
-    width: 82%;
+    top: 19%;
+    width: 92%;
     aspect-ratio: 871 / 502;
     object-fit: contain;
     z-index: 5;
@@ -107,14 +110,14 @@
 
 .player-name-text {
     color: #ffffff;
-    /* Clear white text */
     font-family: 'Arial', sans-serif;
     font-weight: bold;
-    font-size: 3.5cqw;
+    font-size: 3cqw;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 75%;
+    overflow: visible;
+    text-overflow: clip;
+    width: auto;
+    max-width: 82%;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
@@ -189,8 +192,9 @@
     cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: space-around;
-    padding: 0 4%;
+    justify-content: flex-start;
+    padding: 0 2%;
+    box-sizing: border-box;
     z-index: 10;
     transition: transform 0.1s ease, filter 0.2s ease;
 }
@@ -213,19 +217,27 @@
 }
 
 .btn-icon {
-    height: 65%;
+    position: absolute;
+    left: 5%;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 68%;
     width: auto;
     object-fit: contain;
-    margin-right: 5%;
 }
 
 .btn-text {
+    width: 100%;
+    padding-left: 22%;
+    box-sizing: border-box;
+    text-align: center;
     color: #772b02;
-    font-family: 'Impact', 'Arial Black', sans-serif;
-    font-weight: 50;
-    font-size: 5cqw;
+    font-family: 'Anton', 'Impact', sans-serif;
+    font-weight: normal;
+    font-size: 4.8cqw;
     letter-spacing: 0.5px;
     text-shadow: 0 1px 0 rgba(255, 95, 37, 0.4);
+    white-space: nowrap;
 }
 
 /* Free Coins Interactive Overlay */

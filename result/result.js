@@ -9,7 +9,10 @@ style.innerHTML = `
 `;
 document.head.appendChild(style);
 
+let currentOpponentName = "Opponent";
+
 function showWinScreen(isWinner, opponentName = "Opponent") {
+    currentOpponentName = opponentName;
     const winScreen = document.getElementById('win-screen');
     const titleImg = document.getElementById('result-title-img');
     const subtitleText = document.getElementById('result-subtitle-text');
@@ -38,9 +41,14 @@ function showWinScreen(isWinner, opponentName = "Opponent") {
     
     winScreen.style.display = 'flex';
 }
+window.showWinScreen = showWinScreen;
 
-// REMATCH button - reload to restart
+// REMATCH button - start matchmaking again with the same opponent
 document.getElementById('win-play-btn').addEventListener('click', () => {
     document.getElementById('win-screen').style.display = 'none';
-    window.location.reload();
+    if (typeof window.startMatchmaking === 'function') {
+        window.startMatchmaking(window.currentMatchEntryFee || 400, currentOpponentName);
+    } else {
+        window.location.reload();
+    }
 });

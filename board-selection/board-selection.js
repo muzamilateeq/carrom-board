@@ -9,15 +9,15 @@
         { name: 'BEGGINER', bg: 'Green Bar_.png', fee: 200, prize: 400 },
         { name: 'EXPERIENCED', bg: 'Blue Bar_.png', fee: 500, prize: 1000 },
         { name: 'EXPERT', bg: 'purple Bar_.png', fee: 2500, prize: 5000 },
-        { name: 'ADVANCED', bg: 'Yellow Bar_.png', fee: 5000, prize: '10K' },
-        { name: 'ELITE', bg: 'Yellow Bar  copy.png', fee: 10000, prize: '20K' }
+        { name: 'ADVANCED', bg: 'Yellow Bar  copy.png', fee: 5000, prize: '10K' },
+        { name: 'ELITE', bg: 'Yellow Bar_.png', fee: 10000, prize: '20K' }
     ];
 
     const boardListContainer = document.getElementById('board-list-container');
 
     function updateBoardCoins() {
         if (coinsDisplay) {
-            const playerCoins = parseInt(localStorage.getItem('carrom_player_coins') || '159', 10);
+            const playerCoins = parseInt(localStorage.getItem('carrom_player_coins') || '133100', 10);
             coinsDisplay.textContent = playerCoins;
         }
     }
@@ -57,7 +57,7 @@
             `;
 
             item.addEventListener('click', () => {
-                const playerCoins = parseInt(localStorage.getItem('carrom_player_coins') || '159', 10);
+                const playerCoins = parseInt(localStorage.getItem('carrom_player_coins') || '133100', 10);
                 if (playerCoins >= board.fee) {
                     // Call the globally exposed matchmaking trigger
                     if (window.startMatchmaking) {

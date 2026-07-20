@@ -995,17 +995,22 @@ Matter.Events.on(engine, 'afterUpdate', () => {
         syncObjectOnX(85);
         updateTurnIndicator();
 
+        const triggerWin = window.showWinScreen || (typeof showWinScreen !== 'undefined' ? showWinScreen : null);
         if (player1Score >= 9) {
-            if (queenStatus === "covered") {
-                showWinScreen(true, window.currentOpponentName || "Opponent");
-            } else {
-                showWinScreen(false, window.currentOpponentName || "Opponent"); // Player 1 loses for sinking all coins before the queen
+            if (triggerWin) {
+                if (queenStatus === "covered") {
+                    triggerWin(true, window.currentOpponentName || "Opponent");
+                } else {
+                    triggerWin(false, window.currentOpponentName || "Opponent");
+                }
             }
         } else if (player2Score >= 9) {
-            if (queenStatus === "covered") {
-                showWinScreen(false, window.currentOpponentName || "Opponent"); // Player 2 wins, so Player 1 loses
-            } else {
-                showWinScreen(true, window.currentOpponentName || "Opponent"); // Player 2 loses for sinking all coins before the queen
+            if (triggerWin) {
+                if (queenStatus === "covered") {
+                    triggerWin(false, window.currentOpponentName || "Opponent");
+                } else {
+                    triggerWin(true, window.currentOpponentName || "Opponent");
+                }
             }
         }
     }

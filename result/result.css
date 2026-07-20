@@ -1,0 +1,226 @@
+/* Result / Win Screen Overlay Styles */
+#win-screen {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-image: url('../Assets/menu/BG_.png');
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 1000;
+    justify-content: center;
+    align-items: flex-start;
+    box-sizing: border-box;
+}
+
+.win-screen-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+    container-type: inline-size;
+}
+
+@media (min-aspect-ratio: 941/1672) {
+    .win-screen-wrapper {
+        height: 100%;
+        width: auto;
+    }
+}
+
+@media (max-aspect-ratio: 941/1672) {
+    #win-screen {
+        align-items: flex-start;
+    }
+    .win-screen-wrapper {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+/* Title Banner Image */
+.result-title-img {
+    width: 100%;
+    margin-top: 12%;
+    animation: popIn 0.5s ease-out;
+    object-fit: contain;
+}
+
+/* Players Row */
+.result-players-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 4%;
+    padding: 0 8%;
+    box-sizing: border-box;
+}
+
+/* Player Column */
+.result-player-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 38%;
+}
+
+/* Avatar Box */
+.result-avatar-box {
+    width: 17cqw;
+    height: 17cqw;
+    border-radius: 50%;
+    background-image: url('../Assets/menu/User-Name.png');
+    background-size: auto 100%;
+    background-position: left center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Player Name */
+.result-player-name {
+    color: #ffffff;
+    font-family: 'Anton', 'Impact', sans-serif;
+    font-size: 3.8cqw;
+    font-weight: normal;
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 6px;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+/* Chatbox Bubble Container */
+.result-chatbox-container {
+    position: relative;
+    width: 25cqw;
+    margin-top: 4px;
+}
+
+.result-chatbox-bg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.result-chatbox-text {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #2b1d0e;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    font-size: 2.6cqw;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.15;
+    width: 92%;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* VS Graphic Container */
+.result-vs-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 2%;
+    transform: translateY(-2.5cqw);
+}
+
+.result-vs-img {
+    width: 15cqw;
+    height: auto;
+    object-fit: contain;
+}
+
+/* Coin Pile Graphic */
+.result-coin-img {
+    width: 12cqw;
+    height: auto;
+    margin-top: 6%;
+    object-fit: contain;
+}
+
+/* Coins Amount Dark Box */
+.result-coins-amount {
+    background: rgba(26, 18, 12, 0.95);
+    border-radius: 6px;
+    width: 25cqw;
+    aspect-ratio: 131 / 53;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2%;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.result-subtitle-text {
+    color: #ffffff;
+    font-family: 'Anton', 'Impact', sans-serif;
+    font-size: 3.8cqw;
+    font-weight: normal;
+    letter-spacing: 1px;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+/* Rematch Button */
+.result-play-btn {
+    position: relative;
+    width: 35cqw;
+    aspect-ratio: 328 / 95;
+    margin-top: 5%;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+}
+
+.result-play-btn:hover {
+    transform: scale(1.03);
+}
+
+.result-play-btn:active {
+    transform: scale(0.97);
+}
+
+.result-play-btn-img {
+    width: 100%;
+    height: 100%;
+}
+
+.result-play-btn-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ffffff;
+    font-family: 'Anton', 'Impact', sans-serif;
+    font-weight: normal;
+    font-size: 4.2cqw;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    letter-spacing: 1.5px;
+}

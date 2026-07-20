@@ -37,7 +37,7 @@
         }
     }
 
-    window.startMatchmaking = function (entryFee) {
+    window.startMatchmaking = function (entryFee, fixedOpponentName) {
         if (typeof window.deductCoins === 'function') {
             if (!window.deductCoins(entryFee)) {
                 alert("Not enough coins to play on this board!");
@@ -90,7 +90,7 @@
             if (opponentAvatar) {
                 opponentAvatar.classList.remove('sp-pulse');
             }
-            const opponentName = opponentPool[Math.floor(Math.random() * opponentPool.length)];
+            const opponentName = fixedOpponentName || opponentPool[Math.floor(Math.random() * opponentPool.length)];
             if (playerNameRight) {
                 playerNameRight.textContent = opponentName;
             }
