@@ -492,7 +492,7 @@ Matter.Events.on(render, 'afterRender', () => {
             const dy = body.position.y - closestY;
             const distSq = dx * dx + dy * dy;
 
-            const safeDistance = 16;
+            const safeDistance = 35;
             const safeDistanceSq = safeDistance * safeDistance;
 
             if (distSq <= safeDistanceSq && projection < firstCoinDistance) {

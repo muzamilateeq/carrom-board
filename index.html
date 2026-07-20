@@ -33,7 +33,8 @@
 
         #game-background {
             position: relative;
-            aspect-ratio: 941 / 1672;
+            width: min(650px, 100vw);
+            aspect-ratio: 1100 / 1672;
             height: 100vh;
             height: 100dvh;
             max-width: 100vw;
@@ -498,8 +499,11 @@
         <script>
             function resizeGame() {
                 const wrapper = document.getElementById("game-wrapper");
-                // Cap the scale at 1.0 to prevent overflowing on desktop, and use 580 for height to account for full padding
-                const scale = Math.min(window.innerWidth / 380, window.innerHeight / 580, 1);
+                if (!wrapper) return;
+                const bgContainer = document.getElementById("game-background");
+                const containerWidth = bgContainer ? bgContainer.clientWidth : window.innerWidth;
+                const containerHeight = bgContainer ? bgContainer.clientHeight : window.innerHeight;
+                const scale = Math.min(containerWidth / 360, containerHeight / 560, 1.25);
                 wrapper.style.transform = `scale(${scale})`;
             }
             window.addEventListener("resize", resizeGame);
