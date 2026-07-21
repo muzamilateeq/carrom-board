@@ -1119,7 +1119,7 @@ function syncObjectOnX(newX) {
                 const dx = body.position.x - tempX;
                 const dy = body.position.y - startY;
 
-                if (dx * dx + dy * dy < 3250) {
+                if (dx * dx + dy * dy < 1200) {
                     blocked = true;
                     if (Math.abs(body.position.x - 152) < 10) {
                         tempX = body.position.x + 33;

@@ -27,24 +27,24 @@ const target = Matter.Bodies.circle(300, 300, GAME_CONFIG.queen.radius, {
 });
 
 const coinLayout = [
-    { x: 347.5, y: 300.0, type: 'white' },
-    { x: 324.5, y: 341.4, type: 'black' },
-    { x: 277.0, y: 341.4, type: 'white' },
-    { x: 252.5, y: 300.0, type: 'black' },
-    { x: 277.0, y: 258.6, type: 'white' },
-    { x: 324.5, y: 258.6, type: 'black' },
-    { x: 395.1, y: 300.0, type: 'black' },
-    { x: 372.1, y: 341.4, type: 'white' },
-    { x: 347.5, y: 382.8, type: 'black' },
-    { x: 300.0, y: 382.8, type: 'white' },
-    { x: 252.5, y: 382.8, type: 'black' },
-    { x: 229.5, y: 341.4, type: 'white' },
-    { x: 204.9, y: 300.0, type: 'black' },
-    { x: 229.5, y: 258.6, type: 'white' },
-    { x: 252.5, y: 217.2, type: 'black' },
-    { x: 300.0, y: 217.2, type: 'white' },
-    { x: 347.5, y: 217.2, type: 'black' },
-    { x: 372.1, y: 258.6, type: 'white' }
+    { x: 331, y: 300, type: 'white' },
+    { x: 316, y: 327, type: 'black' },
+    { x: 285, y: 327, type: 'white' },
+    { x: 269, y: 300, type: 'black' },
+    { x: 285, y: 273, type: 'white' },
+    { x: 316, y: 273, type: 'black' },
+    { x: 362, y: 300, type: 'black' },
+    { x: 347, y: 327, type: 'white' },
+    { x: 331, y: 354, type: 'black' },
+    { x: 300, y: 354, type: 'white' },
+    { x: 269, y: 354, type: 'black' },
+    { x: 254, y: 327, type: 'white' },
+    { x: 238, y: 300, type: 'black' },
+    { x: 254, y: 273, type: 'white' },
+    { x: 269, y: 246, type: 'black' },
+    { x: 300, y: 246, type: 'white' },
+    { x: 331, y: 246, type: 'black' },
+    { x: 347, y: 273, type: 'white' }
 ];
 
 const coins = coinLayout.map((coin, index) => {
