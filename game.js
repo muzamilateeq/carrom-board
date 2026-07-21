@@ -1052,7 +1052,7 @@ Matter.Events.on(engine, 'afterUpdate', () => {
                 if (body.label === "white" || body.label === "black" || body.label === "queen") {
                     let dx = body.position.x - newX;
                     let dy = body.position.y - newY;
-                    if (dx * dx + dy * dy < 2025) { // 45px visual coin diameter distance (no coin overlap)
+                    if (dx * dx + dy * dy < 225) {
                         overlapping = true;
                     }
                 }
@@ -1125,7 +1125,7 @@ let isStrikerOverlapping = false;
 
 function checkStrikerOverlap(targetX) {
     const allBodies = Composite.allBodies(engine.world);
-    const thresholdSq = 1600; // 40px distance (tighter visual boundary touch)
+    const thresholdSq = 1200; // 32.4px real physical touch distance
     let overlapping = false;
 
     for (let body of allBodies) {
@@ -1148,7 +1148,7 @@ function checkStrikerOverlap(targetX) {
 
 function getValidNonOverlappingX(desiredX) {
     const allBodies = Composite.allBodies(engine.world);
-    const thresholdSq = 1600; // 40px distance
+    const thresholdSq = 1200; // 32.4px real physical touch distance
     let candidate = Math.max(152, Math.min(448, desiredX));
 
     function isOverlappingAt(testX) {
