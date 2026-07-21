@@ -7,8 +7,8 @@ const GAME_CONFIG = {
     },
 
     striker: {
-        radius: 19.5,         // Physical collision size matching visual
-        visualScale: 1.0,     // No artificial scaling to prevent ghost overlapping
+        radius: 17.4,         // Physical collision size
+        visualScale: 2,       // How much to scale the image (1.35 = 35% larger)
         restitution: 0.72,
         frictionAir: 0.032,
         density: 0.0028,      // Striker weight
@@ -22,7 +22,7 @@ const GAME_CONFIG = {
 
     coin: {
         radius: 15,           // Physical collision size
-        visualScale: 1.0,     // No artificial scaling
+        visualScale: 1.50,    // How much to scale the image
         restitution: 0.72,
         frictionAir: 0.032,
         density: 0.0013,
@@ -35,7 +35,7 @@ const GAME_CONFIG = {
 
     queen: {
         radius: 15,           // Physical collision size
-        visualScale: 1.0,     // No artificial scaling
+        visualScale: 1.50,    // How much to scale the image
         restitution: 0.72,
         frictionAir: 0.032,
         density: 0.0013,

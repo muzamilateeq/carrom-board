@@ -22,7 +22,7 @@
     width: 100%;
     height: 100%;
     container-type: inline-size;
-    background-image: url('../../Assets/menu/BG_.png');
+    background-image: url('../Assets/menu/BG_.png');
     background-size: 100% 100%;
     background-position: center;
     background-repeat: no-repeat;
@@ -70,7 +70,7 @@
     width: 100%;
     height: 7.536%;
     /* 126px / 1672px */
-    background-image: url('../../Assets/menu/Upper-Bar.png');
+    background-image: url('../Assets/menu/Upper-Bar.png');
     background-size: 100% 100%;
     z-index: 10;
 }
@@ -86,7 +86,7 @@
     /* 225px / 941px */
     height: 68.25%;
     /* 86px / 126px */
-    background-image: url('../../Assets/menu/User-Name.png');
+    background-image: url('../Assets/menu/User-Name.png');
     background-size: 100% 100%;
     z-index: 11;
     cursor: pointer;
@@ -160,7 +160,7 @@
     /* 204px / 941px */
     height: 59.52%;
     /* 75px / 126px */
-    background-image: url('../../Assets/menu/Coins-Bar.png');
+    background-image: url('../Assets/menu/Coins-Bar.png');
     background-size: 100% 100%;
     z-index: 11;
 }
@@ -188,7 +188,7 @@
     transform: translateX(-50%);
     width: 47.6%;
     aspect-ratio: 448 / 131;
-    background-image: url('../../Assets/menu/Yellow-Button.png');
+    background-image: url('../Assets/menu/Yellow-Button.png');
     background-size: 100% 100%;
     background-color: transparent;
     border: none;
