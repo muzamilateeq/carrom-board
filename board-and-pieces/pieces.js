@@ -1,4 +1,4 @@
-const player = Matter.Bodies.circle(130, 492, GAME_CONFIG.striker.radius, {
+const player = Matter.Bodies.circle(300, 492, GAME_CONFIG.striker.radius, {
     id: 'striker',
     label: 'striker',
     inertia: GAME_CONFIG.striker.inertia,

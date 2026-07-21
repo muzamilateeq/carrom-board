@@ -811,7 +811,7 @@ let foul = false;
 let player1Score = 0;
 let player2Score = 0;
 let earnedExtraTurn = false;
-let startX = 130;
+let startX = 300;
 let startY = 492;
 let queenStatus = "board";
 let queenPocketedBy = null;
@@ -1018,7 +1018,7 @@ Matter.Events.on(engine, 'afterUpdate', () => {
         earnedExtraTurn = false;
         isInMotion = false;
 
-        syncObjectOnX(85);
+        syncObjectOnX(97.5);
         updateTurnIndicator();
 
         const triggerWin = window.showWinScreen || (typeof showWinScreen !== 'undefined' ? showWinScreen : null);
@@ -1146,10 +1146,15 @@ function checkStrikerOverlap(targetX) {
     return overlapping;
 }
 
+const MIN_BOARD_X = 147;
+const MAX_BOARD_X = 454;
+const BOARD_RANGE = 307; // 454 - 147
+const MAX_KNOB_X = 195;
+
 function getValidNonOverlappingX(desiredX) {
     const allBodies = Composite.allBodies(engine.world);
     const thresholdSq = 1200; // 32.4px real physical touch distance
-    let candidate = Math.max(152, Math.min(448, desiredX));
+    let candidate = Math.max(MIN_BOARD_X, Math.min(MAX_BOARD_X, desiredX));
 
     function isOverlappingAt(testX) {
         for (let body of allBodies) {
@@ -1173,12 +1178,12 @@ function getValidNonOverlappingX(desiredX) {
         return candidate;
     }
 
-    for (let offset = 1; offset <= 296; offset++) {
+    for (let offset = 1; offset <= BOARD_RANGE; offset++) {
         let leftX = candidate - offset;
         let rightX = candidate + offset;
 
-        let leftValid = leftX >= 152 && !isOverlappingAt(leftX);
-        let rightValid = rightX <= 448 && !isOverlappingAt(rightX);
+        let leftValid = leftX >= MIN_BOARD_X && !isOverlappingAt(leftX);
+        let rightValid = rightX <= MAX_BOARD_X && !isOverlappingAt(rightX);
 
         if (leftValid && rightValid) {
             return (desiredX <= candidate) ? leftX : rightX;
@@ -1201,10 +1206,10 @@ function snapStrikerIfOverlapping() {
     });
     Matter.Body.setVelocity(player, { x: 0, y: 0 });
 
-    const newX = ((validX - 152) / 296) * 170;
+    const newX = ((validX - MIN_BOARD_X) / BOARD_RANGE) * MAX_KNOB_X;
     const knob = document.getElementById("slider-knob");
     if (knob) {
-        knob.style.left = `${Math.max(0, Math.min(newX, 170))}px`;
+        knob.style.left = `${Math.max(0, Math.min(newX, MAX_KNOB_X))}px`;
     }
 
     isStrikerOverlapping = false;
@@ -1216,16 +1221,16 @@ function syncObjectOnX(newX) {
     // Set sensor mode during positioning so physics engine doesn't push coins
     player.isSensor = true;
 
-    newX = Math.max(0, Math.min(newX, 170));
+    newX = Math.max(0, Math.min(newX, MAX_KNOB_X));
 
-    startX = 152 + (newX / 170) * 296;
-    let tempX = Math.max(152, Math.min(448, startX));
+    startX = MIN_BOARD_X + (newX / MAX_KNOB_X) * BOARD_RANGE;
+    let tempX = Math.max(MIN_BOARD_X, Math.min(MAX_BOARD_X, startX));
 
     // If NOT actively dragging (e.g. turn change / spawn), find clear spot automatically
     if (!isDragging) {
         tempX = getValidNonOverlappingX(tempX);
-        const correctedKnobX = ((tempX - 152) / 296) * 170;
-        newX = Math.max(0, Math.min(correctedKnobX, 170));
+        const correctedKnobX = ((tempX - MIN_BOARD_X) / BOARD_RANGE) * MAX_KNOB_X;
+        newX = Math.max(0, Math.min(correctedKnobX, MAX_KNOB_X));
     }
 
     const knob = document.getElementById("slider-knob");
@@ -1255,8 +1260,8 @@ if (knobElement) {
 window.addEventListener('mousemove', (event) => {
     if (!isDragging || !knobElement) return;
     const sliderRect = knobElement.parentElement.getBoundingClientRect();
-    const scaleX = 190 / sliderRect.width;
-    const mouseX = (event.clientX - sliderRect.left) * scaleX;
+    const usableWidth = Math.max(1, sliderRect.width - 20);
+    const mouseX = ((event.clientX - sliderRect.left - 10) / usableWidth) * MAX_KNOB_X;
     syncObjectOnX(mouseX);
 });
 
@@ -1270,8 +1275,8 @@ if (knobElement) {
 window.addEventListener('touchmove', (event) => {
     if (!isDragging || !knobElement) return;
     const sliderRect = knobElement.parentElement.getBoundingClientRect();
-    const scaleX = 190 / sliderRect.width;
-    const touchX = (event.touches[0].clientX - sliderRect.left) * scaleX;
+    const usableWidth = Math.max(1, sliderRect.width - 20);
+    const touchX = ((event.touches[0].clientX - sliderRect.left - 10) / usableWidth) * MAX_KNOB_X;
     syncObjectOnX(touchX);
     if (event.cancelable) event.preventDefault();
 }, { passive: false });
@@ -1313,7 +1318,7 @@ Composite.allBodies(engine.world).forEach(body => {
 });
 
 updateTurnIndicator();
-syncObjectOnX(85);
+syncObjectOnX(97.5);
 
 window.resetGameBoard = function () {
     // Purge any dynamic extra bodies created during fouls/penalties
@@ -1347,7 +1352,7 @@ window.resetGameBoard = function () {
         player.render.opacity = 1;
         player.collisionFilter.mask = 0xFFFFFFFF;
         player.collisionFilter.category = 1;
-        Matter.Body.setPosition(player, { x: 130, y: 492 });
+        Matter.Body.setPosition(player, { x: 300, y: 492 });
         Matter.Body.setVelocity(player, { x: 0, y: 0 });
         Matter.Body.setAngularVelocity(player, 0);
         if (!Composite.allBodies(engine.world).includes(player)) {
@@ -1386,7 +1391,7 @@ window.resetGameBoard = function () {
         });
     }
 
-    syncObjectOnX(85);
+    syncObjectOnX(97.5);
     updateTurnIndicator();
 };
 
