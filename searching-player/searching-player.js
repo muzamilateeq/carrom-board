@@ -38,12 +38,12 @@
     }
 
     window.startMatchmaking = function (entryFee, fixedOpponentName) {
-        if (typeof window.deductCoins === 'function') {
-            if (!window.deductCoins(entryFee)) {
-                alert("Not enough coins to play on this board!");
-                return;
-            }
+        const currentCoins = typeof window.getPlayerCoins === 'function' ? window.getPlayerCoins() : parseInt(localStorage.getItem('carrom_player_coins') || '5000', 10);
+        if (currentCoins < entryFee) {
+            alert("Not enough coins to play on this board!");
+            return;
         }
+
         window.currentMatchEntryFee = entryFee;
         currentFee = entryFee;
         stopMatchmaking();
@@ -110,6 +110,11 @@
                 } else {
                     clearInterval(countdownInterval);
                     countdownInterval = null;
+
+                    // Deduct coins ON MATCH LAUNCH to board
+                    if (typeof window.deductCoins === 'function') {
+                        window.deductCoins(currentFee);
+                    }
 
                     // Launch game
                     if (window.startLocalGameFromBoard) {

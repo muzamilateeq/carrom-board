@@ -346,6 +346,9 @@ function handleEnd(e) {
             foul = false;
             pocketedInCurrentShot = [];
 
+            // Enable physical collisions for the shot launch
+            player.isSensor = false;
+
             Matter.Body.setVelocity(player, {
                 x: -Math.cos(angle) * calculatedSpeed,
                 y: -Math.sin(angle) * calculatedSpeed
@@ -382,6 +385,9 @@ function drawBoard() {
     }
 }
 
+const tintCanvas = document.createElement('canvas');
+const tintCtx = tintCanvas.getContext('2d');
+
 function drawCustomBody(context, body) {
     let pos = body.position;
     let radius = 7;
@@ -416,8 +422,23 @@ function drawCustomBody(context, body) {
         context.translate(pos.x, pos.y);
         context.rotate(body.angle);
 
-        // Draw the image centered
-        context.drawImage(img, -r, -r, r * 2, r * 2);
+        if (body.label === "striker" && isStrikerOverlapping) {
+            const w = img.width || 200;
+            const h = img.height || 200;
+            if (tintCanvas.width !== w) tintCanvas.width = w;
+            if (tintCanvas.height !== h) tintCanvas.height = h;
+            tintCtx.clearRect(0, 0, w, h);
+            tintCtx.drawImage(img, 0, 0, w, h);
+            tintCtx.globalCompositeOperation = 'source-atop';
+            tintCtx.fillStyle = "rgba(255, 0, 0, 0.55)";
+            tintCtx.fillRect(0, 0, w, h);
+            tintCtx.globalCompositeOperation = 'source-over';
+
+            context.drawImage(tintCanvas, -r, -r, r * 2, r * 2);
+        } else {
+            // Draw the image centered
+            context.drawImage(img, -r, -r, r * 2, r * 2);
+        }
 
         context.restore();
     }
@@ -726,13 +747,20 @@ Matter.Events.on(render, 'afterRender', () => {
         context.fill();
     });
 
+    // Draw coins first
     allBodies.forEach(body => {
         if (
             body.label === "white" ||
             body.label === "black" ||
-            body.label === "queen" ||
-            body.label === "striker"
+            body.label === "queen"
         ) {
+            drawCustomBody(context, body);
+        }
+    });
+
+    // Draw striker ON TOP of all coins
+    allBodies.forEach(body => {
+        if (body.label === "striker") {
             drawCustomBody(context, body);
         }
     });
@@ -789,11 +817,12 @@ let queenStatus = "board";
 let queenPocketedBy = null;
 let pocketedInCurrentShot = [];
 
+const pockets = [
+    { x: 56, y: 56 }, { x: 56, y: 544 },
+    { x: 544, y: 56 }, { x: 544, y: 544 }
+];
+
 Matter.Events.on(engine, 'afterUpdate', () => {
-    const pockets = [
-        { x: 56, y: 56 }, { x: 56, y: 544 },
-        { x: 544, y: 56 }, { x: 544, y: 544 }
-    ];
     const coinPocketRadius = 20;    // Coins fall in at 20px from pocket center
     const strikerPocketRadius = 6; // Striker needs to go EXTREMELY deep to fall in (almost dead center)
     const allBodies = Composite.allBodies(engine.world);
@@ -1023,7 +1052,7 @@ Matter.Events.on(engine, 'afterUpdate', () => {
                 if (body.label === "white" || body.label === "black" || body.label === "queen") {
                     let dx = body.position.x - newX;
                     let dy = body.position.y - newY;
-                    if (dx * dx + dy * dy < 225) {
+                    if (dx * dx + dy * dy < 2025) { // 45px visual coin diameter distance (no coin overlap)
                         overlapping = true;
                     }
                 }
@@ -1092,51 +1121,120 @@ Matter.Events.on(engine, 'afterUpdate', () => {
     }
 });
 
-function syncObjectOnX(newX) {
-    if (isInMotion || player1Score === 9 || player2Score === 9) return;
+let isStrikerOverlapping = false;
 
-    newX = Math.max(0, Math.min(newX, 170));
-
-    const knob = document.getElementById("slider-knob");
-    if (knob) {
-        knob.style.left = `${newX}px`;
-    }
-
-    startX = 152 + (newX / 170) * 296;
-
-    let tempX = startX;
+function checkStrikerOverlap(targetX) {
     const allBodies = Composite.allBodies(engine.world);
+    const thresholdSq = 1600; // 40px distance (tighter visual boundary touch)
+    let overlapping = false;
 
-    while (true) {
-        let blocked = false;
-        allBodies.forEach(body => {
+    for (let body of allBodies) {
+        if (
+            body !== player &&
+            (body.label === "white" ||
+                body.label === "black" ||
+                body.label === "queen")
+        ) {
+            const dx = body.position.x - targetX;
+            const dy = body.position.y - startY;
+            if (dx * dx + dy * dy < thresholdSq) {
+                overlapping = true;
+                break;
+            }
+        }
+    }
+    return overlapping;
+}
+
+function getValidNonOverlappingX(desiredX) {
+    const allBodies = Composite.allBodies(engine.world);
+    const thresholdSq = 1600; // 40px distance
+    let candidate = Math.max(152, Math.min(448, desiredX));
+
+    function isOverlappingAt(testX) {
+        for (let body of allBodies) {
             if (
                 body !== player &&
                 (body.label === "white" ||
                     body.label === "black" ||
                     body.label === "queen")
             ) {
-                const dx = body.position.x - tempX;
+                const dx = body.position.x - testX;
                 const dy = body.position.y - startY;
-
-                if (dx * dx + dy * dy < 1089) {
-                    blocked = true;
-                    if (Math.abs(body.position.x - 152) < 10) {
-                        tempX = body.position.x + 33;
-                    } else {
-                        let prevX = tempX;
-                        tempX = body.position.x + 33;
-                        if (Math.abs(tempX - prevX) < 10) {
-                            tempX += 20;
-                        }
-                    }
+                if (dx * dx + dy * dy < thresholdSq) {
+                    return true;
                 }
             }
-        });
-
-        if (!blocked) break;
-        tempX++;
+        }
+        return false;
     }
+
+    if (!isOverlappingAt(candidate)) {
+        return candidate;
+    }
+
+    for (let offset = 1; offset <= 296; offset++) {
+        let leftX = candidate - offset;
+        let rightX = candidate + offset;
+
+        let leftValid = leftX >= 152 && !isOverlappingAt(leftX);
+        let rightValid = rightX <= 448 && !isOverlappingAt(rightX);
+
+        if (leftValid && rightValid) {
+            return (desiredX <= candidate) ? leftX : rightX;
+        }
+        if (leftValid) return leftX;
+        if (rightValid) return rightX;
+    }
+
+    return candidate;
+}
+
+function snapStrikerIfOverlapping() {
+    if (isInMotion) return;
+
+    let validX = getValidNonOverlappingX(player.position.x);
+
+    Matter.Body.setPosition(player, {
+        x: validX,
+        y: startY
+    });
+    Matter.Body.setVelocity(player, { x: 0, y: 0 });
+
+    const newX = ((validX - 152) / 296) * 170;
+    const knob = document.getElementById("slider-knob");
+    if (knob) {
+        knob.style.left = `${Math.max(0, Math.min(newX, 170))}px`;
+    }
+
+    isStrikerOverlapping = false;
+}
+
+function syncObjectOnX(newX) {
+    if (isInMotion || player1Score === 9 || player2Score === 9) return;
+
+    // Set sensor mode during positioning so physics engine doesn't push coins
+    player.isSensor = true;
+
+    newX = Math.max(0, Math.min(newX, 170));
+
+    startX = 152 + (newX / 170) * 296;
+    let tempX = Math.max(152, Math.min(448, startX));
+
+    // If NOT actively dragging (e.g. turn change / spawn), find clear spot automatically
+    if (!isDragging) {
+        tempX = getValidNonOverlappingX(tempX);
+        const correctedKnobX = ((tempX - 152) / 296) * 170;
+        newX = Math.max(0, Math.min(correctedKnobX, 170));
+    }
+
+    const knob = document.getElementById("slider-knob");
+    if (knob) {
+        knob.style.left = `${newX}px`;
+    }
+
+    // Check if current position overlaps any piece
+    isStrikerOverlapping = checkStrikerOverlap(tempX);
 
     Matter.Body.setPosition(player, {
         x: tempX,
@@ -1179,10 +1277,16 @@ window.addEventListener('touchmove', (event) => {
 }, { passive: false });
 
 window.addEventListener('mouseup', () => {
-    isDragging = false;
+    if (isDragging) {
+        isDragging = false;
+        snapStrikerIfOverlapping();
+    }
 });
 window.addEventListener('touchend', () => {
-    isDragging = false;
+    if (isDragging) {
+        isDragging = false;
+        snapStrikerIfOverlapping();
+    }
 });
 
 function updateTurnIndicator() {
