@@ -523,7 +523,7 @@ Matter.Events.on(render, 'afterRender', () => {
         context.restore();
 
         const startWidth = 4 + (power * 1.5); // Thinner base
-        const endWidth = 1.0;                 // Sleeker tip transition
+        const endWidth = 4;                 // Sleeker tip transition
 
         const dx = solidEndX - player.position.x;
         const dy = solidEndY - player.position.y;
