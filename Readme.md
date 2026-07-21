@@ -19,32 +19,34 @@ d:/Games/
 │   ├── 📂 loading/                  # Loading screen mockup & fills
 │   ├── 📂 Board-slection/           # Board selection cards & banners
 │   ├── 📂 Result/                   # Match victory/defeat banners
+│   ├── 📂 searching-player/         # Matchmaking screen assets
 │   └── 📂 structure/                # Game structure graphics
 │
-├── 📂 board-and-pieces/             # Matter.js Physics Engine Setup
-│   ├── 📄 pieces-config.js          # Physical dimensions, restitution, friction & density
-│   ├── 📄 board.js                  # Carrom board wall boundaries & pockets
-│   └── 📄 pieces.js                 # Striker, Queen & 18-coin layout positioning
-│
-├── 📂 loading/                      # Asset Preloader Module
-│   ├── 📄 loading.js                # Async preloader script & progress tracker
-│   └── 📄 loading.css               # Loading screen styles
-│
-├── 📂 menu/                         # Main Menu & Profile Module
-│   ├── 📄 menu.js                   # Profile name editing, free coins claim & launcher
-│   └── 📄 menu.css                  # Main menu styles & responsive container queries
-│
-├── 📂 board-selection/              # Board Selection Module
-│   ├── 📄 board-selection.js        # Tiered board selection (Beginner -> Elite)
-│   └── 📄 board-selection.css       # Board selection carousel styling
-│
-├── 📂 searching-player/             # Matchmaking Module
-│   ├── 📄 searching-player.js       # Matchmaking radar sequence & opponent generator
-│   └── 📄 searching-player.css      # Matchmaking screen styling
-│
-└── 📂 result/                       # Match Result Module
-    ├── 📄 result.js                 # Win/Loss modal, coin calculations & rematch flow
-    └── 📄 result.css                # Victory modal layout & styling
+└── 📂 src/                          # All Game Component Modules
+    ├── 📂 board-and-pieces/         # Matter.js Physics Engine Setup
+    │   ├── 📄 pieces-config.js      # Physical dimensions, restitution, friction & density
+    │   ├── 📄 board.js              # Carrom board wall boundaries & pockets
+    │   └── 📄 pieces.js             # Striker, Queen & 18-coin layout positioning
+    │
+    ├── 📂 loading/                  # Asset Preloader Module
+    │   ├── 📄 loading.js            # Async preloader script & progress tracker
+    │   └── 📄 loading.css           # Loading screen styles
+    │
+    ├── 📂 menu/                     # Main Menu & Profile Module
+    │   ├── 📄 menu.js               # Profile name editing, free coins claim & launcher
+    │   └── 📄 menu.css              # Main menu styles & responsive container queries
+    │
+    ├── 📂 board-selection/          # Board Selection Module
+    │   ├── 📄 board-selection.js    # Tiered board selection (Beginner -> Elite)
+    │   └── 📄 board-selection.css   # Board selection carousel styling
+    │
+    ├── 📂 searching-player/         # Matchmaking Module
+    │   ├── 📄 searching-player.js   # Matchmaking radar sequence & opponent generator
+    │   └── 📄 searching-player.css  # Matchmaking screen styling
+    │
+    └── 📂 result/                   # Match Result Module
+        ├── 📄 result.js             # Win/Loss modal, coin calculations & rematch flow
+        └── 📄 result.css            # Victory modal layout & styling
 ```
 
 ---

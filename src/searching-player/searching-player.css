@@ -20,7 +20,7 @@
     max-width: 100%;
     max-height: 100%;
     container-type: inline-size;
-    background-image: url('../Assets/menu/BG_.png');
+    background-image: url('../../Assets/menu/BG_.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -53,7 +53,7 @@
     top: 8%;
     width: 92%;
     aspect-ratio: 871 / 502;
-    background-image: url('../Assets/structure/Logo Title_.png');
+    background-image: url('../../Assets/structure/Logo Title_.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
 }
@@ -99,7 +99,7 @@
     width: 13cqw;
     height: 13cqw;
     border-radius: 50%;
-    background-image: url('../Assets/menu/User-Name.png');
+    background-image: url('../../Assets/menu/User-Name.png');
     background-size: auto 100%;
     /* Height scales to container, width scales proportionally */
     background-position: left center;
@@ -169,7 +169,7 @@
     width: 14cqw;
     /* Scaled down to match mockup width */
     aspect-ratio: 131 / 53;
-    background-image: url('../Assets/searching-player/Entry Fee\ Tab_.png');
+    background-image: url('../../Assets/searching-player/Entry Fee\ Tab_.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     display: flex;
@@ -199,7 +199,7 @@
     width: 13cqw;
     /* Scaled to match smaller avatars */
     aspect-ratio: 139 / 250;
-    background-image: url('../Assets/searching-player/VS.png');
+    background-image: url('../../Assets/searching-player/VS.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     margin-bottom: 25%;
@@ -212,7 +212,7 @@
     width: 35%;
     /* Scaled down from 45% to match mockup */
     aspect-ratio: 328 / 95;
-    background-image: url('../Assets/searching-player/Red Button_.png');
+    background-image: url('../../Assets/searching-player/Red Button_.png');
     background-size: 100% 100%;
     background-color: transparent;
     background-repeat: no-repeat;
