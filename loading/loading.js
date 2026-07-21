@@ -1,10 +1,10 @@
 (function() {
     const assets = [
-        './Assets/common/you.png',
-        './Assets/common/oponent-image.png',
-        './Assets/common/coins.png',
-        './Assets/common/images.jpg',
-        './Assets/common/red-background-pic.avif',
+        './you.png',
+        './oponent-image.png',
+        './coins.png',
+        './images.jpg',
+        './red-background-pic.avif',
         './Assets/menu/Mockup.png',
         './Assets/menu/User-Name.png',
         './Assets/menu/Coins-Bar.png',

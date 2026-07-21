@@ -8,11 +8,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="src/loading/loading.css">
-    <link rel="stylesheet" href="src/menu/menu.css">
-    <link rel="stylesheet" href="src/board-selection/board-selection.css">
-    <link rel="stylesheet" href="src/searching-player/searching-player.css">
-    <link rel="stylesheet" href="src/result/result.css">
+    <link rel="stylesheet" href="loading/loading.css">
+    <link rel="stylesheet" href="menu/menu.css">
+    <link rel="stylesheet" href="board-selection/board-selection.css">
+    <link rel="stylesheet" href="searching-player/searching-player.css">
+    <link rel="stylesheet" href="result/result.css">
     <style>
         canvas {
             touch-action: none;
@@ -49,11 +49,15 @@
             box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
         }
 
-        @media (max-width: 768px), (max-aspect-ratio: 941/1672) {
-            html, body {
+        @media (max-width: 768px),
+        (max-aspect-ratio: 941/1672) {
+
+            html,
+            body {
                 align-items: flex-start !important;
                 justify-content: flex-start !important;
             }
+
             #game-background {
                 width: 100vw !important;
                 height: 100vh !important;
@@ -62,7 +66,12 @@
                 box-shadow: none !important;
                 align-items: flex-start !important;
             }
-            #menu-screen, #board-selection-screen, #searching-player-screen, #win-screen, #loading-screen {
+
+            #menu-screen,
+            #board-selection-screen,
+            #searching-player-screen,
+            #win-screen,
+            #loading-screen {
                 align-items: flex-start !important;
                 top: 0 !important;
             }
@@ -296,7 +305,8 @@
                     </div>
 
                     <!-- Top-Right Coins Bar Overlay -->
-                    <div id="menu-free-coins" class="menu-coins-container" style="cursor: pointer;" title="Click for +5000 Free Coins!">
+                    <div id="menu-free-coins" class="menu-coins-container" style="cursor: pointer;"
+                        title="Click for +5000 Free Coins!">
                         <div id="menu-coins-value" class="menu-coins-text">5000</div>
                         <div class="free-coins-plus-btn">+</div>
                     </div>
@@ -332,7 +342,8 @@
                     <img src="./Assets/Board-slection/back-button.png" id="board-back-btn" class="board-back-btn"
                         alt="Back Button">
                     <div class="board-title">SELECT BOARD</div>
-                    <div id="board-free-coins-btn" class="board-coins-container" style="cursor: pointer;" title="Click for +5000 Free Coins!">
+                    <div id="board-free-coins-btn" class="board-coins-container" style="cursor: pointer;"
+                        title="Click for +5000 Free Coins!">
                         <div id="board-coins-value" class="board-coins-text">5000</div>
                         <div class="free-coins-plus-btn">+</div>
                     </div>
@@ -386,10 +397,10 @@
             <div id="score-board">
                 <div id="playerone-image">
                     <div id="playerone-name">YOU:</div>
-                    <img src="./Assets/common/you.png">
+                    <img src="./you.png">
                     <div style="display: flex;flex-direction: row; justify-content: center; align-items: center;">
                         <div id="whitepice"></div>
-                        <img id="player1Queen" src="./Assets/common/images.jpg"
+                        <img id="player1Queen" src="./images.jpg"
                             style="display:none;width:22px;height:22px;border-radius: 10px">
                     </div>
                     <div id="player1Score"><span id="p1score">0</span></div>
@@ -397,16 +408,16 @@
 
                 </div>
                 <div id="coinsimg">
-                    <img src="./Assets/common/coins.png">
+                    <img src="./coins.png">
                     <span id="coinscore" style="color: white; font-size: 20px; font-weight: bold;">50</span>
                 </div>
 
                 <div id="playertwo-image">
                     <div id="playertwo-name">OPPONENT:</div>
-                    <img src="./Assets/common/oponent-image.png">
+                    <img src="./oponent-image.png">
                     <div style="display: flex;flex-direction: row; justify-content: center; align-items: center;">
                         <div id="blackpice"></div>
-                        <img id="player2Queen" src="./Assets/common/images.jpg"
+                        <img id="player2Queen" src="./images.jpg"
                             style="display:none;width:22px;height:22px;border-radius: 10px">
                     </div>
                     <div id="player2Score"><span id="p2score">0</span></div>
@@ -425,93 +436,93 @@
             </div>
 
             <!-- Win/Lose Screen Overlay -->
-        <div id="win-screen">
-            <div class="win-screen-wrapper">
-                <!-- Title Banner (You Win / You Lose) -->
-                <img id="result-title-img" class="result-title-img" src="Assets/Result/Youu Win_.png">
-                
-                <!-- Players Row: Avatar + VS + Avatar -->
-                <div class="result-players-row">
-                    
-                    <!-- Player 1 Column -->
-                    <div class="result-player-column">
-                        <!-- Avatar Circle -->
-                        <div id="win-p1-avatar-box" class="result-avatar-box"></div>
-                        <!-- Name Below Avatar -->
-                        <div id="win-p1-name" class="result-player-name">Guest07b52</div>
-                        <!-- ChatBox Bubble Below Name -->
-                        <div class="result-chatbox-container">
-                            <img src="Assets/Result/ChatBox.png" class="result-chatbox-bg">
-                            <span class="result-chatbox-text">I want to play<br>again!</span>
+            <div id="win-screen">
+                <div class="win-screen-wrapper">
+                    <!-- Title Banner (You Win / You Lose) -->
+                    <img id="result-title-img" class="result-title-img" src="Assets/Result/Youu Win_.png">
+
+                    <!-- Players Row: Avatar + VS + Avatar -->
+                    <div class="result-players-row">
+
+                        <!-- Player 1 Column -->
+                        <div class="result-player-column">
+                            <!-- Avatar Circle -->
+                            <div id="win-p1-avatar-box" class="result-avatar-box"></div>
+                            <!-- Name Below Avatar -->
+                            <div id="win-p1-name" class="result-player-name">Guest07b52</div>
+                            <!-- ChatBox Bubble Below Name -->
+                            <div class="result-chatbox-container">
+                                <img src="Assets/Result/ChatBox.png" class="result-chatbox-bg">
+                                <span class="result-chatbox-text">I want to play<br>again!</span>
+                            </div>
+                        </div>
+
+                        <!-- VS Image -->
+                        <div class="result-vs-container">
+                            <img src="Assets/Result/VS.png" class="result-vs-img">
+                        </div>
+
+                        <!-- Player 2 Column -->
+                        <div class="result-player-column">
+                            <!-- Avatar Circle -->
+                            <div id="win-p2-avatar-box" class="result-avatar-box"></div>
+                            <!-- Name Below Avatar -->
+                            <div id="win-p2-name" class="result-player-name">Opponent</div>
+                            <!-- ChatBox Bubble Below Name -->
+                            <div class="result-chatbox-container">
+                                <img src="Assets/Result/ChatBox.png" class="result-chatbox-bg">
+                                <span class="result-chatbox-text">I want to play<br>again!</span>
+                            </div>
                         </div>
                     </div>
-                    
-                    <!-- VS Image -->
-                    <div class="result-vs-container">
-                        <img src="Assets/Result/VS.png" class="result-vs-img">
+
+                    <!-- Coin Pile Image -->
+                    <img src="Assets/Board-slection/Coin.png" class="result-coin-img">
+
+                    <!-- Coins Amount in Dark Box -->
+                    <div id="result-coins-amount" class="result-coins-amount">
+                        <span id="result-subtitle-text" class="result-subtitle-text">400</span>
                     </div>
-                    
-                    <!-- Player 2 Column -->
-                    <div class="result-player-column">
-                        <!-- Avatar Circle -->
-                        <div id="win-p2-avatar-box" class="result-avatar-box"></div>
-                        <!-- Name Below Avatar -->
-                        <div id="win-p2-name" class="result-player-name">Opponent</div>
-                        <!-- ChatBox Bubble Below Name -->
-                        <div class="result-chatbox-container">
-                            <img src="Assets/Result/ChatBox.png" class="result-chatbox-bg">
-                            <span class="result-chatbox-text">I want to play<br>again!</span>
-                        </div>
+
+                    <!-- REMATCH Button -->
+                    <div id="win-play-btn" class="result-play-btn">
+                        <img src="Assets/Result/Blue Button_.png" class="result-play-btn-img">
+                        <span class="result-play-btn-text">REMATCH</span>
                     </div>
-                </div>
-
-                <!-- Coin Pile Image -->
-                <img src="Assets/Board-slection/Coin.png" class="result-coin-img">
-
-                <!-- Coins Amount in Dark Box -->
-                <div id="result-coins-amount" class="result-coins-amount">
-                    <span id="result-subtitle-text" class="result-subtitle-text">400</span>
-                </div>
-
-                <!-- REMATCH Button -->
-                <div id="win-play-btn" class="result-play-btn">
-                    <img src="Assets/Result/Blue Button_.png" class="result-play-btn-img">
-                    <span class="result-play-btn-text">REMATCH</span>
                 </div>
             </div>
+
+
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+            <script src="board-and-pieces/pieces-config.js"></script>
+            <script src="board-and-pieces/board.js"></script>
+            <script src="board-and-pieces/pieces.js"></script>
+            <script src="game.js"></script>
+            <script src="board-selection/board-selection.js" defer></script>
+            <script src="searching-player/searching-player.js" defer></script>
+            <script src="menu/menu.js" defer></script>
+            <script src="result/result.js" defer></script>
+
+            <!-- Loading Screen Logic -->
+            <script src="loading/loading.js" defer></script>
+
+
+
+            <script>
+                function resizeGame() {
+                    const wrapper = document.getElementById("game-wrapper");
+                    if (!wrapper) return;
+                    const bgContainer = document.getElementById("game-background");
+                    const containerWidth = bgContainer ? bgContainer.clientWidth : window.innerWidth;
+                    const containerHeight = bgContainer ? bgContainer.clientHeight : window.innerHeight;
+                    const scale = Math.min(containerWidth / 360, containerHeight / 560, 1.25);
+                    wrapper.style.transform = `scale(${scale})`;
+                }
+                window.addEventListener("resize", resizeGame);
+                resizeGame();
+            </script>
         </div>
-
-
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
-        <script src="src/board-and-pieces/pieces-config.js"></script>
-        <script src="src/board-and-pieces/board.js"></script>
-        <script src="src/board-and-pieces/pieces.js"></script>
-        <script src="game.js"></script>
-        <script src="src/board-selection/board-selection.js" defer></script>
-        <script src="src/searching-player/searching-player.js" defer></script>
-        <script src="src/menu/menu.js" defer></script>
-        <script src="src/result/result.js" defer></script>
-
-        <!-- Loading Screen Logic -->
-        <script src="src/loading/loading.js" defer></script>
-
-
-
-        <script>
-            function resizeGame() {
-                const wrapper = document.getElementById("game-wrapper");
-                if (!wrapper) return;
-                const bgContainer = document.getElementById("game-background");
-                const containerWidth = bgContainer ? bgContainer.clientWidth : window.innerWidth;
-                const containerHeight = bgContainer ? bgContainer.clientHeight : window.innerHeight;
-                const scale = Math.min(containerWidth / 360, containerHeight / 560, 1.25);
-                wrapper.style.transform = `scale(${scale})`;
-            }
-            window.addEventListener("resize", resizeGame);
-            resizeGame();
-        </script>
-    </div>
 
 </body>
 
