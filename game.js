@@ -4,8 +4,8 @@ Matter.Resolver._restingThresh = 0.001;
 const engine = Engine.create();
 engine.gravity.y = 0;
 
-engine.positionIterations = 8;
-engine.velocityIterations = 6;
+engine.positionIterations = 12;
+engine.velocityIterations = 10;
 engine.constraintIterations = 2;
 const container = document.getElementById('game-container');
 const render = Render.create({
@@ -273,9 +273,10 @@ let dragStarted = false;
 let startMouseX = 0;
 let startMouseY = 0;
 
-const dragThreshold = 10;
-const maxDragDistance = 100;
-const maxSpeed = 38;
+const dragThreshold = GAME_CONFIG.controls?.dragThreshold || 10;
+const maxDragDistance = GAME_CONFIG.controls?.maxDragDistance || 100;
+const minSpeed = GAME_CONFIG.controls?.minSpeed || 1.5;
+const maxSpeed = GAME_CONFIG.controls?.maxSpeed || 32;
 
 function handleStart(e) {
     if (isInMotion || player1Score === 9 || player2Score === 9) return;
@@ -330,7 +331,7 @@ function handleEnd(e) {
         let dragY = pageMouseY - player.position.y;
         let currentDragDistance = Math.hypot(dragX, dragY);
 
-        if (currentDragDistance < dragThreshold) {
+        if (currentDragDistance <= dragThreshold) {
             isAiming = false;
             return;
         }
@@ -338,22 +339,24 @@ function handleEnd(e) {
         isAiming = false;
         isInMotion = true;
 
-        if (currentDragDistance > 0) {
-            let clampedDistance = Math.min(currentDragDistance, maxDragDistance);
-            let calculatedSpeed = (clampedDistance / maxDragDistance) * maxSpeed;
-            let angle = Math.atan2(dragY, dragX);
-            firstHitPiece = null;
-            foul = false;
-            pocketedInCurrentShot = [];
+        let clampedDistance = Math.min(currentDragDistance, maxDragDistance);
+        let normalizedDrag = (clampedDistance - dragThreshold) / (maxDragDistance - dragThreshold);
+        normalizedDrag = Math.max(0, Math.min(1, normalizedDrag));
 
-            // Enable physical collisions for the shot launch
-            player.isSensor = false;
+        let powerRatio = Math.pow(normalizedDrag, 1.6);
+        let calculatedSpeed = minSpeed + powerRatio * (maxSpeed - minSpeed);
+        let angle = Math.atan2(dragY, dragX);
+        firstHitPiece = null;
+        foul = false;
+        pocketedInCurrentShot = [];
 
-            Matter.Body.setVelocity(player, {
-                x: -Math.cos(angle) * calculatedSpeed,
-                y: -Math.sin(angle) * calculatedSpeed
-            });
-        }
+        // Enable physical collisions for the shot launch
+        player.isSensor = false;
+
+        Matter.Body.setVelocity(player, {
+            x: -Math.cos(angle) * calculatedSpeed,
+            y: -Math.sin(angle) * calculatedSpeed
+        });
     }
 }
 
@@ -388,6 +391,8 @@ function drawBoard() {
 const tintCanvas = document.createElement('canvas');
 const tintCtx = tintCanvas.getContext('2d');
 
+let hasTintedStriker = false;
+
 function drawCustomBody(context, body) {
     let pos = body.position;
     let radius = 7;
@@ -413,26 +418,23 @@ function drawCustomBody(context, body) {
     if (img && img.complete) {
         context.save();
         context.globalAlpha = body.render.opacity !== undefined ? body.render.opacity : 1.0;
-
-        context.shadowColor = "rgba(0, 0, 0, 0.4)";
-        context.shadowBlur = 4;
-        context.shadowOffsetX = 2;
-        context.shadowOffsetY = 2;
-
         context.translate(pos.x, pos.y);
         context.rotate(body.angle);
 
         if (body.label === "striker" && isStrikerOverlapping) {
             const w = img.width || 200;
             const h = img.height || 200;
-            if (tintCanvas.width !== w) tintCanvas.width = w;
-            if (tintCanvas.height !== h) tintCanvas.height = h;
-            tintCtx.clearRect(0, 0, w, h);
-            tintCtx.drawImage(img, 0, 0, w, h);
-            tintCtx.globalCompositeOperation = 'source-atop';
-            tintCtx.fillStyle = "rgba(255, 0, 0, 0.55)";
-            tintCtx.fillRect(0, 0, w, h);
-            tintCtx.globalCompositeOperation = 'source-over';
+            if (!hasTintedStriker || tintCanvas.width !== w) {
+                tintCanvas.width = w;
+                tintCanvas.height = h;
+                tintCtx.clearRect(0, 0, w, h);
+                tintCtx.drawImage(img, 0, 0, w, h);
+                tintCtx.globalCompositeOperation = 'source-atop';
+                tintCtx.fillStyle = "rgba(255, 0, 0, 0.55)";
+                tintCtx.fillRect(0, 0, w, h);
+                tintCtx.globalCompositeOperation = 'source-over';
+                hasTintedStriker = true;
+            }
 
             context.drawImage(tintCanvas, -r, -r, r * 2, r * 2);
         } else {
@@ -446,7 +448,7 @@ function drawCustomBody(context, body) {
 
 Matter.Events.on(render, 'afterRender', () => {
     let context = render.context;
-    const allBodies = Composite.allBodies(engine.world);
+    const allBodies = engine.world.bodies;
     aimAnimation += 0.001;
     shinePos += 6;
 
@@ -466,8 +468,9 @@ Matter.Events.on(render, 'afterRender', () => {
         let dragY = mousePos.y - player.position.y;
 
         let currentDragDistance = Math.hypot(dragX, dragY);
-        currentDragDistance = Math.min(currentDragDistance, maxDragDistance);
-        const power = currentDragDistance / maxDragDistance;
+        let clampedDistance = Math.min(currentDragDistance, maxDragDistance);
+        let normalizedDrag = Math.max(0, (clampedDistance - dragThreshold) / (maxDragDistance - dragThreshold));
+        const power = Math.pow(normalizedDrag, 1.6);
 
         let angle = Math.atan2(dragY, dragX);
         let hitX = player.position.x;
@@ -477,14 +480,22 @@ Matter.Events.on(render, 'afterRender', () => {
         let dirY = -Math.sin(angle);
 
         const circleRadius = maxDragDistance;
-        const solidEndX = player.position.x + dirX * currentDragDistance;
-        const solidEndY = player.position.y + dirY * currentDragDistance;
-        let t = Infinity;
+        const arrowLengthMult = GAME_CONFIG.controls?.arrowLengthMult || 1.6;
+        const visualArrowLength = clampedDistance * arrowLengthMult; // Scale up the arrow line
+        const solidEndX = player.position.x + dirX * visualArrowLength;
+        const solidEndY = player.position.y + dirY * visualArrowLength;
+        let t = 1200; // Ensure the dotted line reaches the walls
 
-        if (dirX > 0) t = Math.min(t, (565 - player.position.x) / dirX);
-        if (dirX < 0) t = Math.min(t, (35 - player.position.x) / dirX);
-        if (dirY > 0) t = Math.min(t, (565 - player.position.y) / dirY);
-        if (dirY < 0) t = Math.min(t, (35 - player.position.y) / dirY);
+        const strikerR = GAME_CONFIG.striker.radius;
+        const minWallX = 30.2 + strikerR;
+        const maxWallX = 569.8 - strikerR;
+        const minWallY = 30.2 + strikerR;
+        const maxWallY = 569.8 - strikerR;
+
+        if (dirX > 0) t = Math.min(t, (maxWallX - player.position.x) / dirX);
+        if (dirX < 0) t = Math.min(t, (minWallX - player.position.x) / dirX);
+        if (dirY > 0) t = Math.min(t, (maxWallY - player.position.y) / dirY);
+        if (dirY < 0) t = Math.min(t, (minWallY - player.position.y) / dirY);
 
         hitX += dirX * t;
         hitY += dirY * t;
@@ -513,16 +524,29 @@ Matter.Events.on(render, 'afterRender', () => {
             const dy = body.position.y - closestY;
             const distSq = dx * dx + dy * dy;
 
-            const safeDistance = 35;
+            const safeDistance = GAME_CONFIG.striker.radius + GAME_CONFIG.coin.radius;
             const safeDistanceSq = safeDistance * safeDistance;
 
-            if (distSq <= safeDistanceSq && projection < firstCoinDistance) {
-                firstCoinDistance = projection;
-                const gap = 2;
-                firstCoin = {
-                    x: player.position.x + dirX * (projection - gap),
-                    y: player.position.y + dirY * (projection - gap)
-                };
+            if (distSq <= safeDistanceSq) {
+                const exactHitDist = projection - Math.sqrt(Math.max(0, safeDistanceSq - distSq));
+                if (exactHitDist < firstCoinDistance) {
+                    firstCoinDistance = exactHitDist;
+                    
+                    // Extend the aim line so it perfectly touches the coin's visual boundary
+                    const visualCoinRadius = GAME_CONFIG.coin.radius * GAME_CONFIG.coin.visualScale;
+                    let visualLineDist = exactHitDist;
+                    
+                    if (distSq <= visualCoinRadius * visualCoinRadius) {
+                        visualLineDist = projection - Math.sqrt(visualCoinRadius * visualCoinRadius - distSq);
+                    } else {
+                        visualLineDist = projection; // Glancing hit
+                    }
+                    
+                    firstCoin = {
+                        x: player.position.x + dirX * visualLineDist,
+                        y: player.position.y + dirY * visualLineDist
+                    };
+                }
             }
         });
 
@@ -531,7 +555,7 @@ Matter.Events.on(render, 'afterRender', () => {
         context.rotate(aimAnimation);
 
         context.beginPath();
-        context.arc(0, 0, currentDragDistance, 0, Math.PI * 2);
+        context.arc(0, 0, visualArrowLength, 0, Math.PI * 2);
 
         context.setLineDash([12, 8]);
         context.lineDashOffset = -aimAnimation * 40;
@@ -543,8 +567,9 @@ Matter.Events.on(render, 'afterRender', () => {
         context.stroke();
         context.restore();
 
-        const startWidth = 4 + (power * 1.5); // Thinner base
-        const endWidth = 4;                 // Sleeker tip transition
+        const arrowWidthMult = GAME_CONFIG.controls?.arrowWidthMult || 1.0;
+        const startWidth = (2.2 + (power * 0.8)) * arrowWidthMult; // Sleek base
+        const endWidth = 2.0 * arrowWidthMult;                   // Sleek tip transition
 
         const dx = solidEndX - player.position.x;
         const dy = solidEndY - player.position.y;
@@ -574,9 +599,9 @@ Matter.Events.on(render, 'afterRender', () => {
             y: player.position.y - ny * startWidth
         };
 
-        // Arrow Tip dimensions (sleeker, matching user request)
-        const arrowLength = 11 + (power * 4);
-        const arrowWidth = 7 + (power * 2.5);
+        // Arrow Tip dimensions (sleeker & refined)
+        const arrowLength = (7 + (power * 3)) * arrowWidthMult;
+        const arrowWidth = (4.5 + (power * 1.5)) * arrowWidthMult;
 
         const tip = {
             x: solidEndX + (dx / len) * arrowLength,
@@ -600,7 +625,7 @@ Matter.Events.on(render, 'afterRender', () => {
         gradient.addColorStop(0.7, "#ff6d00");
         gradient.addColorStop(1.0, "#e52b00");
 
-        // Unified Arrow Path (Shaft + Tip combined to prevent dividing line)
+        // Unified Arrow Path (Shaft + Tip combined)
         context.beginPath();
         context.moveTo(p1.x, p1.y);
         context.lineTo(p2.x, p2.y);
@@ -616,7 +641,7 @@ Matter.Events.on(render, 'afterRender', () => {
         context.shadowBlur = 6;
         context.fill();
 
-        context.lineWidth = 1.5;
+        context.lineWidth = 1.0;
         context.strokeStyle = "#ffffff";
         context.shadowBlur = 0;
         context.stroke();
@@ -641,22 +666,22 @@ Matter.Events.on(render, 'afterRender', () => {
         const offset = (time * speed) % 20;
 
         context.strokeStyle = "rgba(255, 255, 255, 0.6)";
-        context.lineWidth = 1.2;
+        context.lineWidth = 1.0;
         context.lineCap = "round";
         context.lineJoin = "round";
 
         for (let x = offset; x < len; x += 20) {
             context.beginPath();
-            context.moveTo(x - 6, -startWidth);
+            context.moveTo(x - 4, -startWidth);
             context.lineTo(x, 0);
-            context.lineTo(x - 6, startWidth);
+            context.lineTo(x - 4, startWidth);
             context.stroke();
         }
         context.restore();
 
         // Thin, clean white dashed line projecting forward
         context.beginPath();
-        context.moveTo(solidEndX, solidEndY);
+        context.moveTo(tip.x, tip.y);
 
         if (firstCoin) {
             context.lineTo(firstCoin.x, firstCoin.y);
@@ -664,21 +689,21 @@ Matter.Events.on(render, 'afterRender', () => {
             context.lineTo(hitX, hitY);
         }
 
-        context.setLineDash([6, 6]);
+        context.setLineDash([5, 5]);
         context.strokeStyle = "rgba(255, 255, 255, 0.85)";
-        context.lineWidth = 2;
+        context.lineWidth = 1.5;
         context.stroke();
         context.setLineDash([]);
 
         if (!firstCoin) {
             let reflectX = dirX;
             let reflectY = dirY;
-            const margin = 0.5;
+            const margin = 1.5;
 
-            if (Math.abs(hitX - 10) < margin || Math.abs(hitX - 290) < margin) {
+            if (Math.abs(hitX - minWallX) < margin || Math.abs(hitX - maxWallX) < margin) {
                 reflectX = -reflectX;
             }
-            if (Math.abs(hitY - 10) < margin || Math.abs(hitY - 290) < margin) {
+            if (Math.abs(hitY - minWallY) < margin || Math.abs(hitY - maxWallY) < margin) {
                 reflectY = -reflectY;
             }
 
@@ -707,14 +732,26 @@ Matter.Events.on(render, 'afterRender', () => {
                 const dy = body.position.y - closestY;
                 const perpSq = dx * dx + dy * dy;
 
-                const safeDistance = 17;
+                const safeDistance = GAME_CONFIG.striker.radius + GAME_CONFIG.coin.radius;
                 const safeDistanceSq = safeDistance * safeDistance;
 
-                if (perpSq <= safeDistanceSq && projection < nearestDistance) {
-                    nearestDistance = projection;
-                    const gap = 2;
-                    stopX = hitX + reflectX * (projection - gap);
-                    stopY = hitY + reflectY * (projection - gap);
+                if (perpSq <= safeDistanceSq) {
+                    const exactHitDist = projection - Math.sqrt(Math.max(0, safeDistanceSq - perpSq));
+                    if (exactHitDist < nearestDistance) {
+                        nearestDistance = exactHitDist;
+                        
+                        // Extend bounce line to perfectly touch the coin visually
+                        const visualCoinRadius = GAME_CONFIG.coin.radius * GAME_CONFIG.coin.visualScale;
+                        let visualLineDist = exactHitDist;
+                        if (perpSq <= visualCoinRadius * visualCoinRadius) {
+                            visualLineDist = projection - Math.sqrt(visualCoinRadius * visualCoinRadius - perpSq);
+                        } else {
+                            visualLineDist = projection; // Glancing hit
+                        }
+                        
+                        stopX = hitX + reflectX * visualLineDist;
+                        stopY = hitY + reflectY * visualLineDist;
+                    }
                 }
             });
         }
@@ -825,7 +862,7 @@ const pockets = [
 Matter.Events.on(engine, 'afterUpdate', () => {
     const coinPocketRadius = 20;    // Coins fall in at 20px from pocket center
     const strikerPocketRadius = 6; // Striker needs to go EXTREMELY deep to fall in (almost dead center)
-    const allBodies = Composite.allBodies(engine.world);
+    const allBodies = engine.world.bodies;
 
     allBodies.forEach(body => {
         if (body.label === 'striker' || body.label === 'queen' || body.label === 'white' || body.label === 'black') {
@@ -1044,7 +1081,7 @@ Matter.Events.on(engine, 'afterUpdate', () => {
         let distStep = 2;
         let currentTry = 0;
 
-        const allBodies = Composite.allBodies(engine.world);
+        const allBodies = engine.world.bodies;
 
         while (currentTry < maxTries) {
             let overlapping = false;
@@ -1082,7 +1119,7 @@ Matter.Events.on(engine, 'afterUpdate', () => {
             Matter.Body.setPosition(coinToReturn, { x: newX, y: newY });
             Matter.Body.setVelocity(coinToReturn, { x: 0, y: 0 });
             Matter.Body.setAngularVelocity(coinToReturn, 0);
-            if (!Composite.allBodies(engine.world).includes(coinToReturn)) {
+            if (!engine.world.bodies.includes(coinToReturn)) {
                 Composite.add(engine.world, coinToReturn);
             }
         } else {
@@ -1124,8 +1161,9 @@ Matter.Events.on(engine, 'afterUpdate', () => {
 let isStrikerOverlapping = false;
 
 function checkStrikerOverlap(targetX) {
-    const allBodies = Composite.allBodies(engine.world);
-    const thresholdSq = 1200; // 32.4px real physical touch distance
+    const allBodies = engine.world.bodies;
+    const safeDistance = GAME_CONFIG.striker.radius + GAME_CONFIG.coin.radius;
+    const thresholdSq = safeDistance * safeDistance;
     let overlapping = false;
 
     for (let body of allBodies) {
@@ -1152,8 +1190,9 @@ const BOARD_RANGE = 307; // 454 - 147
 const MAX_KNOB_X = 195;
 
 function getValidNonOverlappingX(desiredX) {
-    const allBodies = Composite.allBodies(engine.world);
-    const thresholdSq = 1200; // 32.4px real physical touch distance
+    const allBodies = engine.world.bodies;
+    const safeDistance = GAME_CONFIG.striker.radius + GAME_CONFIG.coin.radius;
+    const thresholdSq = safeDistance * safeDistance;
     let candidate = Math.max(MIN_BOARD_X, Math.min(MAX_BOARD_X, desiredX));
 
     function isOverlappingAt(testX) {
@@ -1313,7 +1352,7 @@ Render.run(render);
 
 drawBoard();
 
-Composite.allBodies(engine.world).forEach(body => {
+engine.world.bodies.forEach(body => {
     body.render.visible = false;
 });
 
@@ -1322,7 +1361,7 @@ syncObjectOnX(97.5);
 
 window.resetGameBoard = function () {
     // Purge any dynamic extra bodies created during fouls/penalties
-    const currentWorldBodies = Composite.allBodies(engine.world);
+    const currentWorldBodies = engine.world.bodies;
     currentWorldBodies.forEach(b => {
         if (b !== player && b !== target && (!coins || !coins.includes(b))) {
             if (b.label === 'white' || b.label === 'black' || b.label === 'queen' || b.label === 'striker') {
@@ -1355,7 +1394,7 @@ window.resetGameBoard = function () {
         Matter.Body.setPosition(player, { x: 300, y: 492 });
         Matter.Body.setVelocity(player, { x: 0, y: 0 });
         Matter.Body.setAngularVelocity(player, 0);
-        if (!Composite.allBodies(engine.world).includes(player)) {
+        if (!engine.world.bodies.includes(player)) {
             Composite.add(engine.world, player);
         }
     }
@@ -1368,7 +1407,7 @@ window.resetGameBoard = function () {
         Matter.Body.setPosition(target, { x: 300, y: 300 });
         Matter.Body.setVelocity(target, { x: 0, y: 0 });
         Matter.Body.setAngularVelocity(target, 0);
-        if (!Composite.allBodies(engine.world).includes(target)) {
+        if (!engine.world.bodies.includes(target)) {
             Composite.add(engine.world, target);
         }
     }
@@ -1384,7 +1423,7 @@ window.resetGameBoard = function () {
                 Matter.Body.setPosition(c, { x: layoutPos.x, y: layoutPos.y });
                 Matter.Body.setVelocity(c, { x: 0, y: 0 });
                 Matter.Body.setAngularVelocity(c, 0);
-                if (!Composite.allBodies(engine.world).includes(c)) {
+                if (!engine.world.bodies.includes(c)) {
                     Composite.add(engine.world, c);
                 }
             }

@@ -1,26 +1,26 @@
-const topWall = Matter.Bodies.rectangle(300, -60, 800, 200, {
-    restitution: 0.5,
+const topWall = Matter.Bodies.rectangle(300, -69.8, 800, 200, {
+    restitution: 0.85,
     friction: 0,
     frictionStatic: 0,
     slop: 0,
     isStatic: true, render: { visible: false }
 });
-const bottomWall = Matter.Bodies.rectangle(300, 660, 800, 200, {
-    restitution: 0.5,
+const bottomWall = Matter.Bodies.rectangle(300, 669.8, 800, 200, {
+    restitution: 0.85,
     friction: 0,
     frictionStatic: 0,
     slop: 0,
     isStatic: true, render: { visible: false }
 });
-const leftWall = Matter.Bodies.rectangle(-60, 300, 200, 800, {
-    restitution: 0.5,
+const leftWall = Matter.Bodies.rectangle(-69.8, 300, 200, 800, {
+    restitution: 0.85,
     friction: 0,
     frictionStatic: 0,
     slop: 0,
     isStatic: true, render: { visible: false }
 });
-const rightWall = Matter.Bodies.rectangle(660, 300, 200, 800, {
-    restitution: 0.5,
+const rightWall = Matter.Bodies.rectangle(669.8, 300, 200, 800, {
+    restitution: 0.85,
     friction: 0,
     frictionStatic: 0,
     slop: 0,
