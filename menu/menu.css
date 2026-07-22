@@ -33,6 +33,7 @@
     #menu-screen {
         align-items: flex-start;
     }
+
     .menu-wrapper {
         height: 100%;
         width: auto;
@@ -43,6 +44,7 @@
     #menu-screen {
         align-items: flex-start;
     }
+
     .menu-wrapper {
         width: 100%;
         height: 100%;
@@ -230,9 +232,11 @@
 }
 
 .btn-text {
-    width: 100%;
-    padding-left: 22%;
-    box-sizing: border-box;
+    position: absolute;
+    left: 28%;
+    right: 4%;
+    top: 50%;
+    transform: translateY(-50%);
     text-align: center;
     color: #772b02;
     font-family: 'Anton', 'Impact', sans-serif;
@@ -367,6 +371,7 @@
     transition: transform 0.2s ease, filter 0.2s ease;
     z-index: 20;
 }
+
 .free-coins-plus-btn:hover {
     transform: translateY(-50%) scale(1.15);
     filter: brightness(1.2);

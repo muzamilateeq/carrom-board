@@ -1435,3 +1435,72 @@ window.resetGameBoard = function () {
 };
 
 Runner.run(runner, engine);
+
+// ==========================================
+// Settings / Pause Overlay Logic
+// ==========================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    const settingsOverlay = document.getElementById('settings-overlay');
+    const gamePauseBtn = document.getElementById('game-pause-btn');
+    const resumeBtn = document.getElementById('resume-btn');
+    const leaveBtn = document.getElementById('leave-btn');
+    const soundToggleBtn = document.getElementById('sound-toggle-btn');
+    const soundIcon = document.getElementById('sound-icon');
+    const saveSettingsBtn = document.getElementById('save-settings-btn');
+
+    let isSoundOn = true;
+
+    function closeSettings() {
+        if (settingsOverlay) settingsOverlay.style.opacity = '0';
+    }
+
+    if (gamePauseBtn) {
+        gamePauseBtn.addEventListener('click', () => {
+            if (settingsOverlay) settingsOverlay.style.opacity = '1';
+        });
+    }
+
+    if (resumeBtn) {
+        resumeBtn.addEventListener('click', closeSettings);
+    }
+
+    if (saveSettingsBtn) {
+        saveSettingsBtn.addEventListener('click', closeSettings);
+    }
+
+    if (soundToggleBtn) {
+        soundToggleBtn.addEventListener('click', () => {
+            isSoundOn = !isSoundOn;
+            if (isSoundOn) {
+                if (soundIcon) soundIcon.src = 'Assets/setting/Sound On_.png';
+            } else {
+                if (soundIcon) soundIcon.src = 'Assets/setting/Sound Off.png';
+            }
+        });
+    }
+
+    if (leaveBtn) {
+        leaveBtn.addEventListener('click', () => {
+            // Hide overlay
+            if (settingsOverlay) settingsOverlay.style.opacity = '0';
+
+            // Hide game wrapper
+            const gameWrapper = document.getElementById('game-wrapper');
+            if (gameWrapper) {
+                gameWrapper.style.opacity = '0';
+                gameWrapper.style.pointerEvents = 'none';
+            }
+
+            // Reset game state
+            if (typeof resetGame === 'function') {
+                resetGame();
+            }
+
+            // Go to board selection screen directly
+            if (typeof window.openBoardSelection === 'function') {
+                window.openBoardSelection();
+            }
+        });
+    }
+});

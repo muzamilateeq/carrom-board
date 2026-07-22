@@ -535,9 +535,220 @@
         <!-- Game Page Background to match other screens -->
         <div id="game-page-background"
             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: flex-start; z-index: 5; opacity: 0; pointer-events: none; transition: opacity 0.6s ease-in-out;">
-            <div class="menu-wrapper" style="box-shadow: none;"></div>
+            <div class="menu-wrapper" style="box-shadow: none;">
+                <!-- Top Navigation Bar for Game Page -->
+                <div class="menu-top-bar">
+                    <!-- Simple Pause Button instead of Player Name -->
+                    <div id="game-pause-btn" title="Pause Game"
+                        style="position: absolute; top: 15.87%; left: 4%; height: 68.25%; aspect-ratio: 1; background: linear-gradient(135deg, #ff9e2c, #d34a00); border: 2.5px solid #ffffff; border-radius: 20%; box-shadow: 0 4px 6px rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; cursor: pointer; pointer-events: auto; z-index: 15;">
+                        <div
+                            style="width: 35%; height: 45%; border-left: 3px solid white; border-right: 3px solid white; box-sizing: border-box;">
+                        </div>
+                    </div>
+
+                    <div class="menu-coins-container">
+                        <div class="menu-coins-text">5000</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-</body>
+        <!-- Settings / Pause Overlay -->
+        <div id="settings-overlay" class="settings-overlay">
+            <div class="settings-popup">
+                <img src="Assets/setting/popup_.png" class="settings-bg" alt="Settings Background">
+                <div class="settings-content">
 
+                    <div class="settings-title">• SETTINGS •</div>
+
+                    <div class="settings-buttons-row">
+                        <!-- Leave -->
+                        <div class="settings-col">
+                            <button id="leave-btn" class="settings-circle-btn">
+                                <img src="Assets/setting/Button_.png" class="circle-btn-bg">
+                                <img src="Assets/setting/Leave_.png" class="circle-btn-icon">
+                            </button>
+                            <div class="settings-label">Leave</div>
+                        </div>
+                        <!-- Sound -->
+                        <div class="settings-col">
+                            <button id="sound-toggle-btn" class="settings-circle-btn">
+                                <img src="Assets/setting/Button_.png" class="circle-btn-bg">
+                                <img src="Assets/setting/Sound On_.png" id="sound-icon" class="circle-btn-icon">
+                            </button>
+                            <div class="settings-label">Sound</div>
+                        </div>
+                        <!-- Resume -->
+                        <div class="settings-col">
+                            <button id="resume-btn" class="settings-circle-btn">
+                                <img src="Assets/setting/Button_.png" class="circle-btn-bg">
+                                <img src="Assets/setting/Resume_.png" class="circle-btn-icon">
+                            </button>
+                            <div class="settings-label">Resume</div>
+                        </div>
+                    </div>
+
+                    <button id="save-settings-btn" class="settings-save-btn">
+                        <img src="Assets/setting/Green Button_.png" class="save-btn-bg">
+                        <span class="save-btn-text">SAVE</span>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .settings-overlay {
+                position: absolute;
+                top: 0; left: 0;
+                width: 100%; height: 100%;
+                background: rgba(0,0,0,0.72);
+                z-index: 2000;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.25s ease;
+            }
+            .settings-overlay[style*="opacity: 1"] {
+                pointer-events: auto;
+            }
+
+            /* Use container queries — popup scales with game board width */
+            .settings-popup {
+                position: relative;
+                /* ~70% of the game-background container, capped at 280px */
+                width: clamp(180px, 70%, 280px);
+                aspect-ratio: 740 / 572;
+                container-type: inline-size;
+                transform: scale(0.75);
+                transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+            .settings-overlay[style*="opacity: 1"] .settings-popup {
+                transform: scale(1);
+            }
+
+            .settings-bg {
+                position: absolute;
+                top: 0; left: 0;
+                width: 100%; height: 100%;
+                object-fit: fill;
+            }
+
+            .settings-content {
+                position: relative;
+                z-index: 2;
+                width: 100%; height: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: space-evenly;
+                padding: 8% 5%;
+                box-sizing: border-box;
+            }
+
+            /* All sizing now in cqw so it scales with popup width */
+            .settings-title {
+                color: #7a2e00;
+                font-family: 'Impact', 'Arial Black', sans-serif;
+                font-size: 6cqw;
+                font-weight: bold;
+                letter-spacing: 0.3cqw;
+                margin: 0;
+            }
+
+            .settings-buttons-row {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: flex-start;
+                gap: 5%;
+                width: 90%;
+            }
+
+            .settings-col {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 2%;
+                flex: 1;
+            }
+
+            .settings-circle-btn {
+                position: relative;
+                background: transparent;
+                border: none;
+                cursor: pointer;
+                width: 100%;
+                aspect-ratio: 1;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                transition: transform 0.1s ease;
+            }
+            .settings-circle-btn:hover { transform: scale(1.06); filter: brightness(1.1); }
+            .settings-circle-btn:active { transform: scale(0.94); }
+
+            .circle-btn-bg {
+                position: absolute;
+                top: 0; left: 0;
+                width: 100%; height: 100%;
+                object-fit: contain;
+            }
+            .circle-btn-icon {
+                position: relative;
+                z-index: 2;
+                width: 52%;
+                height: 52%;
+                object-fit: contain;
+                filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
+            }
+
+            .settings-label {
+                color: #7a2e00;
+                font-family: 'Arial', sans-serif;
+                font-size: 4cqw;
+                font-weight: bold;
+            }
+
+            .settings-save-btn {
+                position: relative;
+                background: transparent;
+                border: none;
+                cursor: pointer;
+                width: 55%;
+                aspect-ratio: 361 / 106;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                transition: transform 0.1s ease;
+            }
+            .settings-save-btn:hover { transform: scale(1.05); filter: brightness(1.1); }
+            .settings-save-btn:active { transform: scale(0.95); }
+
+            .save-btn-bg {
+                position: absolute;
+                top: 0; left: 0;
+                width: 100%; height: 100%;
+                object-fit: fill;
+            }
+            .save-btn-text {
+                position: relative;
+                z-index: 2;
+                color: white;
+                font-family: 'Impact', 'Arial Black', sans-serif;
+                font-size: 5.5cqw;
+                letter-spacing: 0.3cqw;
+                text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+            }
+
+            /* Responsive pause button inside scoreboard */
+            #game-pause-btn {
+                flex-shrink: 0;
+            }
+        </style>
+</body>
 </html>
