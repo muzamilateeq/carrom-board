@@ -4,7 +4,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at center, #3d1c0b 0%, #110703 100%);
+    background: #000000;
     display: none;
     justify-content: center;
     align-items: center;
@@ -37,6 +37,7 @@
     #board-selection-screen {
         align-items: flex-start;
     }
+
     .board-wrapper {
         width: 100%;
         height: 100%;

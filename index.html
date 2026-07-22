@@ -99,7 +99,7 @@
         #outside-container {
             width: 215px;
             height: 20px;
-            background-color: #2a2c1c;
+            background-color: #ff0000;
             border-radius: 50px;
             border: 3px solid #555;
             position: relative;
@@ -516,7 +516,7 @@
                     const bgContainer = document.getElementById("game-background");
                     const containerWidth = bgContainer ? bgContainer.clientWidth : window.innerWidth;
                     const containerHeight = bgContainer ? bgContainer.clientHeight : window.innerHeight;
-                    const scale = Math.min(containerWidth / 360, containerHeight / 560, 1.25);
+                    const scale = Math.min(containerWidth / 360, containerHeight / 560, 1.8);
                     wrapper.style.transform = `scale(${scale})`;
                 }
                 window.addEventListener("resize", resizeGame);
