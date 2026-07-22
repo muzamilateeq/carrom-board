@@ -49,7 +49,7 @@ const GAME_CONFIG = {
     controls: {
         dragThreshold: 15,
         maxDragDistance: 55,
-        minSpeed: 0.5,
+        minSpeed: 1,
         maxSpeed: 30,
         arrowLengthMult: 1.6,
         arrowWidthMult: 1.5

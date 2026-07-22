@@ -560,9 +560,9 @@ Matter.Events.on(render, 'afterRender', () => {
         context.setLineDash([12, 8]);
         context.lineDashOffset = -aimAnimation * 40;
 
-        context.strokeStyle = "#dddbd1ff";
-        context.lineWidth = 1;
-        context.shadowColor = "#FFD700";
+        context.strokeStyle = "#FFD700"; // Solid Gold
+        context.lineWidth = 2;
+        context.shadowColor = "#FFA500";
         context.shadowBlur = 12;
         context.stroke();
         context.restore();
