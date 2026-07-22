@@ -531,17 +531,17 @@ Matter.Events.on(render, 'afterRender', () => {
                 const exactHitDist = projection - Math.sqrt(Math.max(0, safeDistanceSq - distSq));
                 if (exactHitDist < firstCoinDistance) {
                     firstCoinDistance = exactHitDist;
-                    
+
                     // Extend the aim line so it perfectly touches the coin's visual boundary
                     const visualCoinRadius = GAME_CONFIG.coin.radius * GAME_CONFIG.coin.visualScale;
                     let visualLineDist = exactHitDist;
-                    
+
                     if (distSq <= visualCoinRadius * visualCoinRadius) {
                         visualLineDist = projection - Math.sqrt(visualCoinRadius * visualCoinRadius - distSq);
                     } else {
                         visualLineDist = projection; // Glancing hit
                     }
-                    
+
                     firstCoin = {
                         x: player.position.x + dirX * visualLineDist,
                         y: player.position.y + dirY * visualLineDist
@@ -739,7 +739,7 @@ Matter.Events.on(render, 'afterRender', () => {
                     const exactHitDist = projection - Math.sqrt(Math.max(0, safeDistanceSq - perpSq));
                     if (exactHitDist < nearestDistance) {
                         nearestDistance = exactHitDist;
-                        
+
                         // Extend bounce line to perfectly touch the coin visually
                         const visualCoinRadius = GAME_CONFIG.coin.radius * GAME_CONFIG.coin.visualScale;
                         let visualLineDist = exactHitDist;
@@ -748,7 +748,7 @@ Matter.Events.on(render, 'afterRender', () => {
                         } else {
                             visualLineDist = projection; // Glancing hit
                         }
-                        
+
                         stopX = hitX + reflectX * visualLineDist;
                         stopY = hitY + reflectY * visualLineDist;
                     }
