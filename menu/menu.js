@@ -25,10 +25,25 @@
         }
     }
 
-    // Helper to update coins UI without overlapping default assets
+    // Helper to update coins UI across all screens
     function updateCoinsUI(value) {
         if (coinsDisplay) {
             coinsDisplay.textContent = value;
+        }
+        
+        const gameNavCoins = document.getElementById('game-nav-coins-value');
+        if (gameNavCoins) {
+            gameNavCoins.textContent = value;
+        }
+
+        const scoreBoardCoins = document.getElementById('coinscore');
+        if (scoreBoardCoins) {
+            scoreBoardCoins.textContent = value;
+        }
+
+        const boardSelectionCoins = document.getElementById('board-coins-value');
+        if (boardSelectionCoins) {
+            boardSelectionCoins.textContent = value;
         }
     }
 
