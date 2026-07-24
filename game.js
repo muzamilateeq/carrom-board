@@ -459,13 +459,8 @@ Matter.Events.on(render, 'afterRender', () => {
     context.globalCompositeOperation = 'source-over';
 
     if (isAiming) {
-        let mousePos = {
-            x: pageMouseX,
-            y: pageMouseY
-        };
-
-        let dragX = mousePos.x - player.position.x;
-        let dragY = mousePos.y - player.position.y;
+        let dragX = pageMouseX - player.position.x;
+        let dragY = pageMouseY - player.position.y;
 
         let currentDragDistance = Math.hypot(dragX, dragY);
         let clampedDistance = Math.min(currentDragDistance, maxDragDistance);
@@ -770,37 +765,26 @@ Matter.Events.on(render, 'afterRender', () => {
     context.fillStyle = "#FFD700";
     context.fill();
 
-    const r = 5;
+    context.fillStyle = "#FFD700";
+    context.beginPath(); context.arc(x, y - 5, 1.3, 0, Math.PI * 2); context.fill();
+    context.beginPath(); context.arc(x + 5, y, 1.3, 0, Math.PI * 2); context.fill();
+    context.beginPath(); context.arc(x, y + 5, 1.3, 0, Math.PI * 2); context.fill();
+    context.beginPath(); context.arc(x - 5, y, 1.3, 0, Math.PI * 2); context.fill();
 
-    [
-        [0, -r],
-        [r, 0],
-        [0, r],
-        [-r, 0]
-    ].forEach(([dx, dy]) => {
-        context.beginPath();
-        context.arc(x + dx, y + dy, 1.3, 0, Math.PI * 2);
-        context.fillStyle = "#FFD700";
-        context.fill();
-    });
-
-    // Draw coins first
-    allBodies.forEach(body => {
-        if (
-            body.label === "white" ||
-            body.label === "black" ||
-            body.label === "queen"
-        ) {
+    // Draw coins first, and store striker reference to render on top
+    let strikerBody = null;
+    for (let i = 0; i < allBodies.length; i++) {
+        const body = allBodies[i];
+        if (body.label === "white" || body.label === "black" || body.label === "queen") {
             drawCustomBody(context, body);
+        } else if (body.label === "striker") {
+            strikerBody = body;
         }
-    });
-
+    }
     // Draw striker ON TOP of all coins
-    allBodies.forEach(body => {
-        if (body.label === "striker") {
-            drawCustomBody(context, body);
-        }
-    });
+    if (strikerBody) {
+        drawCustomBody(context, strikerBody);
+    }
 
     updateAndDrawParticles(context);
 
@@ -864,41 +848,38 @@ Matter.Events.on(engine, 'afterUpdate', () => {
     const strikerPocketRadius = 6; // Striker needs to go EXTREMELY deep to fall in (almost dead center)
     const allBodies = engine.world.bodies;
 
-    allBodies.forEach(body => {
-        if (body.label === 'striker' || body.label === 'queen' || body.label === 'white' || body.label === 'black') {
-            for (let pocket of pockets) {
+    for (let i = 0; i < allBodies.length; i++) {
+        const body = allBodies[i];
+        const label = body.label;
+
+        if ((label === 'striker' || label === 'queen' || label === 'white' || label === 'black') && !body.isPocketed) {
+            const effectiveRadius = (label === 'striker') ? strikerPocketRadius : coinPocketRadius;
+            const radiusSq = effectiveRadius * effectiveRadius;
+            for (let j = 0; j < pockets.length; j++) {
+                const pocket = pockets[j];
                 const dx = body.position.x - pocket.x;
                 const dy = body.position.y - pocket.y;
-                const distSq = dx * dx + dy * dy;
-                const effectiveRadius = (body.label === 'striker') ? strikerPocketRadius : coinPocketRadius;
-                const radiusSq = effectiveRadius * effectiveRadius;
-                if (distSq < radiusSq) {
-                    if (body.isPocketed) {
-                        break;
-                    }
-
+                if (dx * dx + dy * dy < radiusSq) {
                     body.isPocketed = true;
                     body.pocketStartFrame = 0;
                     body.targetPocket = { x: pocket.x, y: pocket.y };
                     body.collisionFilter.mask = 0;
                     body.render.opacity = 1.0;
 
-                    if (body.label === 'striker') {
+                    if (label === 'striker') {
                         foul = true;
                         if (!pocketedInCurrentShot.includes("striker")) {
                             pocketedInCurrentShot.push("striker");
                         }
                     } else {
-                        pocketedInCurrentShot.push(body.label);
+                        pocketedInCurrentShot.push(label);
                     }
-                    spawnPocketParticles(pocket.x, pocket.y, body.label);
+                    spawnPocketParticles(pocket.x, pocket.y, label);
                     break;
                 }
             }
         }
-    });
 
-    allBodies.forEach(body => {
         if (body.isPocketed) {
             body.pocketStartFrame = (body.pocketStartFrame || 0) + 1;
 
@@ -914,7 +895,7 @@ Matter.Events.on(engine, 'afterUpdate', () => {
             }
 
             if (body.render.opacity <= 0 || body.pocketStartFrame >= 70) {
-                if (body.label === 'striker') {
+                if (label === 'striker') {
                     // Reset the striker after animation finishes!
                     body.isPocketed = false;
                     body.render.opacity = 1.0;
@@ -927,7 +908,7 @@ Matter.Events.on(engine, 'afterUpdate', () => {
                 }
             }
         }
-    });
+    }
 
     const allStopped = allBodies.every(
         body => body.isPocketed || body.speed < 0.009
