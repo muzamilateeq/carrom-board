@@ -482,10 +482,10 @@ Matter.Events.on(render, 'afterRender', () => {
         let t = 1200; // Ensure the dotted line reaches the walls
 
         const strikerR = GAME_CONFIG.striker.radius;
-        const minWallX = 30.2 + strikerR;
-        const maxWallX = 569.8 - strikerR;
-        const minWallY = 30.2 + strikerR;
-        const maxWallY = 569.8 - strikerR;
+        const minWallX = 37.7 + strikerR;
+        const maxWallX = 562.3 - strikerR;
+        const minWallY = 37.7 + strikerR;
+        const maxWallY = 562.3 - strikerR;
 
         if (dirX > 0) t = Math.min(t, (maxWallX - player.position.x) / dirX);
         if (dirX < 0) t = Math.min(t, (minWallX - player.position.x) / dirX);
